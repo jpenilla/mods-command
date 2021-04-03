@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 1,
+  "id": "mods-command",
+  "version": "${VERSION}",
+  "name": "Mods Command",
+  "description": "Adds a command to pretty print installed mods.",
+  "authors": [
+    "jmp"
+  ],
+  "contact": {
+    "homepage": "https://github.com/jpenilla/ModsCommand",
+    "sources": "https://github.com/jpenilla/ModsCommand",
+    "issues": "https://github.com/jpenilla/ModsCommand/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/mods-command/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "xyz.jpenilla.modscommand.ModsCommandModInitializer"
+    ],
+    "client": [
+      "xyz.jpenilla.modscommand.ModsCommandClientModInitializer"
+    ]
+  },
+  "mixins": [
+    "mods-command.mixins.json"
+  ],
+  "depends": {
+    "fabric": ">=0.31.0",
+    "fabricloader": ">=0.7.4",
+    "minecraft": "1.16.x"
+  }
+}
