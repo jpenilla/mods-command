@@ -3,16 +3,15 @@
   "id": "mods-command",
   "version": "${VERSION}",
   "name": "Mods Command",
-  "description": "Adds a command to pretty print installed mods.",
+  "description": "${DESCRIPTION}",
   "authors": [
     "jmp"
   ],
   "contact": {
-    "homepage": "https://github.com/jpenilla/ModsCommand",
-    "sources": "https://github.com/jpenilla/ModsCommand",
-    "issues": "https://github.com/jpenilla/ModsCommand/issues"
+    "homepage": "${GITHUB_URL}",
+    "sources": "${GITHUB_URL}",
+    "issues": "${GITHUB_URL}/issues"
   },
-  "license": "MIT",
   "icon": "assets/mods-command/icon.png",
   "environment": "*",
   "entrypoints": {
@@ -24,10 +23,9 @@
     ]
   },
   "mixins": [
-    "mods-command.mixins.json"
   ],
   "depends": {
-    "fabric": ">=0.31.0",
+    "fabric": ">=0.30.0",
     "fabricloader": ">=0.7.4",
     "minecraft": "1.16.x"
   }

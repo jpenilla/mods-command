@@ -4,22 +4,28 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.permission.CommandPermission;
+import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.metadata.Person;
+import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.BufferedWriter;
+import java.io.IOException;
 import java.io.StringWriter;
-import java.util.stream.Collectors;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
+import static java.util.stream.Collectors.joining;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
-import static net.kyori.adventure.text.format.NamedTextColor.GREEN;
+import static xyz.jpenilla.modscommand.Colors.EMERALD;
+import static xyz.jpenilla.modscommand.Colors.PINK;
 import static xyz.jpenilla.modscommand.Mods.MODS;
 
 final class DumpModsCommand implements RegistrableCommand {
@@ -45,27 +51,61 @@ final class DumpModsCommand implements RegistrableCommand {
   }
 
   private void executeDumpModList(final @NonNull CommandContext<Commander> ctx) {
+    final String dump;
+    try {
+      dump = createDump();
+      writeDump(dump);
+    } catch (final IOException ex) {
+      throw new RuntimeException("Failed to create mod list dump.", ex);
+    }
+    final TextComponent.Builder message = text()
+      .content("Saved list of installed mods to ")
+      .append(text("installed-mods.yml", PINK))
+      .append(text(" in the game directory."));
+    ctx.getSender().sendMessage(message);
+    final TextComponent.Builder copyMessage = text()
+      .content("Click here to copy it's contents to the clipboard.")
+      .color(PINK)
+      .clickEvent(copyToClipboard(dump))
+      .hoverEvent(text("Click to copy to clipboard!", EMERALD));
+    ctx.getSender().sendMessage(copyMessage);
+  }
+
+  private static @NonNull String createDump() throws ConfigurateException {
     final StringWriter stringWriter = new StringWriter();
     final BufferedWriter bufferedWriter = new BufferedWriter(stringWriter);
-    final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+    final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
       .sink(() -> bufferedWriter)
       .build();
-    final CommentedConfigurationNode node = loader.createNode();
-    try {
-      for (final ModDescription mod : MODS.topLevelMods()) {
-        serializeModDescriptionToNode(node.node("mods"), mod);
-      }
-      loader.save(node);
-      ctx.getSender().sendMessage(
-        text()
-          .content("Click to copy mod list to clipboard")
-          .color(GREEN)
-          .clickEvent(copyToClipboard(stringWriter.toString()))
-          .hoverEvent(text("Click to copy mod list to clipboard"))
-      );
-    } catch (final ConfigurateException ex) {
-      throw new RuntimeException(ex);
+    final ConfigurationNode root = loader.createNode();
+
+    final FabricLoader fabricLoader = FabricLoader.getInstance();
+    root.node("environment-type").set(fabricLoader.getEnvironmentType());
+    root.node("development-environment").set(fabricLoader.isDevelopmentEnvironment());
+    root.node("launch-arguments").set(fabricLoader.getLaunchArguments(true));
+
+    final ConfigurationNode os = root.node("operating-system");
+    os.node("arch").set(System.getProperty("os.arch"));
+    os.node("name").set(System.getProperty("os.name"));
+    os.node("version").set(System.getProperty("os.version"));
+
+    final ConfigurationNode java = root.node("java");
+    java.node("vendor").set(System.getProperty("java.vendor"));
+    java.node("vendor-url").set(System.getProperty("java.vendor.url"));
+    java.node("version").set(System.getProperty("java.version"));
+
+    final ConfigurationNode modsNode = root.node("mods");
+    for (final ModDescription mod : MODS.topLevelMods()) {
+      serializeModDescriptionToNode(modsNode, mod);
     }
+
+    loader.save(root);
+    return stringWriter.toString();
+  }
+
+  private static void writeDump(final @NonNull String dump) throws IOException {
+    final Path file = FabricLoader.getInstance().getGameDir().resolve("installed-mods.yml");
+    Files.write(file, dump.getBytes(StandardCharsets.UTF_8));
   }
 
   private static void serializeModDescriptionToNode(final @NonNull ConfigurationNode node, final @NonNull ModDescription mod) throws SerializationException {
@@ -75,7 +115,7 @@ final class DumpModsCommand implements RegistrableCommand {
     modNode.node("version").set(mod.version());
     if (!mod.authors().isEmpty()) {
       modNode.node("authors").set(
-        mod.authors().stream().map(Person::getName).collect(Collectors.joining(", "))
+        mod.authors().stream().map(Person::getName).collect(joining(", "))
       );
     }
     for (final ModDescription child : mod.children()) {

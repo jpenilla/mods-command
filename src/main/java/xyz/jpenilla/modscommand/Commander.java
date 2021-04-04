@@ -16,7 +16,7 @@ interface Commander extends ForwardingAudience.Single {
       this.source = source;
     }
 
-    public FabricClientCommandSource source() {
+    public @NonNull FabricClientCommandSource source() {
       return this.source;
     }
 
@@ -33,7 +33,7 @@ interface Commander extends ForwardingAudience.Single {
       this.source = source;
     }
 
-    public CommandSourceStack source() {
+    public @NonNull CommandSourceStack source() {
       return this.source;
     }
 

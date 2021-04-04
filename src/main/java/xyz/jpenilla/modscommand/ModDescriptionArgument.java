@@ -65,7 +65,7 @@ public final class ModDescriptionArgument extends CommandArgument<Commander, Mod
         return ArgumentParseResult.success(meta);
       }
       return ArgumentParseResult.failure(new IllegalArgumentException(String.format(
-        "No mod with id '%s'",
+        "No mod with id '%s'.",
         inputQueue.peek()
       )));
     }
