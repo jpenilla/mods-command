@@ -16,9 +16,9 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
-import static xyz.jpenilla.modscommand.Mods.MODS;
+import static xyz.jpenilla.modscommand.Mods.mods;
 
-public final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
+final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
   private ModDescriptionArgument(
     final boolean required,
     final @NonNull String name,
@@ -59,7 +59,7 @@ public final class ModDescriptionArgument extends CommandArgument<Commander, Mod
   public static final class Parser implements ArgumentParser<Commander, ModDescription> {
     @Override
     public @NonNull ArgumentParseResult<@NonNull ModDescription> parse(final @NonNull CommandContext<Commander> commandContext, final @NonNull Queue<@NonNull String> inputQueue) {
-      final ModDescription meta = MODS.findMod(Objects.requireNonNull(inputQueue.peek(), "inputQueue.peek() returned null"));
+      final ModDescription meta = mods().findMod(Objects.requireNonNull(inputQueue.peek(), "inputQueue.peek() returned null"));
       if (meta != null) {
         inputQueue.remove();
         return ArgumentParseResult.success(meta);
@@ -72,7 +72,7 @@ public final class ModDescriptionArgument extends CommandArgument<Commander, Mod
 
     @Override
     public @NonNull List<@NonNull String> suggestions(final @NonNull CommandContext<Commander> commandContext, final @NonNull String input) {
-      return MODS.allMods()
+      return mods().allMods()
         .map(ModDescription::modId)
         .collect(Collectors.toList());
     }

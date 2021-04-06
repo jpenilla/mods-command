@@ -52,7 +52,9 @@ tasks {
     options.encoding = Charsets.UTF_8.toString()
   }
   jar {
-    from("license.txt")
+    from("license.txt") {
+      rename { "license_${project.name}.txt" }
+    }
   }
   remapJar {
     archiveFileName.set("${project.name}-mc$minecraftVersion-${project.version}.jar")

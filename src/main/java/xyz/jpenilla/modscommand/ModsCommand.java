@@ -2,17 +2,25 @@ package xyz.jpenilla.modscommand;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
+import cloud.commandframework.arguments.CommandArgument;
+import cloud.commandframework.arguments.standard.IntegerArgument;
 import cloud.commandframework.context.CommandContext;
+import cloud.commandframework.keys.CloudKey;
+import cloud.commandframework.keys.SimpleCloudKey;
 import cloud.commandframework.permission.CommandPermission;
+import io.leangen.geantyref.TypeToken;
 import net.fabricmc.loader.api.metadata.Person;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
+import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import java.util.function.IntFunction;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,10 +42,11 @@ import static xyz.jpenilla.modscommand.Colors.EMERALD;
 import static xyz.jpenilla.modscommand.Colors.MIDNIGHT_BLUE;
 import static xyz.jpenilla.modscommand.Colors.MUSTARD;
 import static xyz.jpenilla.modscommand.Colors.PURPLE;
-import static xyz.jpenilla.modscommand.Mods.MODS;
+import static xyz.jpenilla.modscommand.Mods.mods;
 
 final class ModsCommand implements RegistrableCommand {
-  private static final String MOD_ARGUMENT_NAME = "mod_id";
+  private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = SimpleCloudKey.of("mod_id", TypeToken.get(ModDescription.class));
+  private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page", TypeToken.get(Integer.class));
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?"); // copied from adventure-text-serializer-legacy
   private static final Component GRAY_SEPARATOR = text(':', GRAY);
   private static final Component DASH = text(" - ", MIDNIGHT_BLUE);
@@ -62,59 +71,126 @@ final class ModsCommand implements RegistrableCommand {
     manager.command(
       mods.handler(this::executeListMods)
     );
-    final Command.Builder<Commander> mod = mods.argument(ModDescriptionArgument.of(MOD_ARGUMENT_NAME));
+    manager.command(
+      mods.literal("page")
+        .argument(pageArgument())
+        .handler(this::executeListMods)
+    );
+    final Command.Builder<Commander> mod = mods.literal("mod")
+      .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()));
     manager.command(
       mod.handler(this::executeModInfo)
     );
     manager.command(
       mod.literal("children")
+        .argument(pageArgument())
         .handler(this::executeListChildren)
     );
   }
 
+  private static @NonNull CommandArgument<Commander, Integer> pageArgument() {
+    return IntegerArgument.<Commander>newBuilder(PAGE_ARGUMENT_KEY.getName())
+      .withMin(1)
+      .asOptionalWithDefault("1")
+      .build();
+  }
+
   private void executeListMods(final @NonNull CommandContext<Commander> ctx) {
-    final TextComponent.Builder builder = text()
-      .append(text("Loaded Mods", PURPLE, BOLD))
-      .append(text(String.format(" (%s total, %s top-level)", MODS.allMods().count(), MODS.topLevelMods().size()), GRAY, ITALIC));
-    for (final ModDescription mod : MODS.topLevelMods()) {
-      builder.append(newline())
-        .append(DASH)
-        .append(shortModDescription(mod));
-    }
-    ctx.getSender().sendMessage(builder);
+    final int page = ctx.getOptional(PAGE_ARGUMENT_KEY).orElse(1);
+    final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
+      .header((currentPage, pages) -> TextComponent.ofChildren(
+        text("Loaded Mods", PURPLE, BOLD),
+        text(String.format(" (%s total, %s top-level)", mods().allMods().count(), mods().topLevelMods().size()), GRAY, ITALIC)
+      ))
+      .footer(this.footerRenderer(p -> String.format("/%s page %d", this.label, p)))
+      .pageOutOfRange(ModsCommand::pageOutOfRange)
+      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .build();
+    pagination.render(mods().topLevelMods(), page, 8).forEach(ctx.getSender()::sendMessage);
   }
 
   private void executeListChildren(final @NonNull CommandContext<Commander> ctx) {
-    final ModDescription mod = ctx.get(MOD_ARGUMENT_NAME);
+    final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
+    final int page = ctx.get(PAGE_ARGUMENT_KEY);
     if (mod.children().isEmpty()) {
       final TextComponent.Builder message = text()
         .color(MUSTARD)
         .content("Mod ")
         .append(text()
           .append(coloredBoldModName(mod))
-          .apply(this.modClickAndHover(mod))
-        )
+          .apply(this.modClickAndHover(mod)))
         .append(text(" does not have any child mods!"));
       ctx.getSender().sendMessage(message);
       return;
     }
-    final TextComponent.Builder message = text()
-      .append(coloredBoldModName(mod))
-      .append(text(" child mods"))
-      .append(newline())
-      .append(
-        mod.children().stream()
-          .map(child -> text()
-            .append(DASH)
-            .append(this.shortModDescription(child))
-            .build())
-          .collect(toComponent(newline()))
-      );
-    ctx.getSender().sendMessage(message);
+    final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
+      .header((currentPage, pages) -> text()
+        .color(MUSTARD)
+        .append(coloredBoldModName(mod))
+        .append(text(" child mods")))
+      .footer(this.footerRenderer(p -> String.format("/%s mod %s children %s", this.label, mod.modId(), p)))
+      .pageOutOfRange(ModsCommand::pageOutOfRange)
+      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .build();
+    pagination.render(mod.children(), page, 8).forEach(ctx.getSender()::sendMessage);
+  }
+
+  private @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> footerRenderer(final @NonNull IntFunction<String> commandFunction) {
+    return (currentPage, pages) -> {
+      if (pages == 1) {
+        return empty(); // we don't need to see 'Page 1/1'
+      }
+      final TextComponent.Builder builder = text()
+        .color(MUSTARD)
+        .content("Page ")
+        .append(text(currentPage, PURPLE))
+        .append(text('/'))
+        .append(text(pages, PURPLE));
+      if (currentPage > 1) {
+        builder.append(space())
+          .append(previousPageButton(currentPage, commandFunction));
+      }
+      if (currentPage < pages) {
+        builder.append(space())
+          .append(nextPageButton(currentPage, commandFunction));
+      }
+      return builder;
+    };
+  }
+
+  private static @NonNull Component previousPageButton(final int currentPage, final @NonNull IntFunction<String> commandFunction) {
+    return text()
+      .content("←")
+      .color(BRIGHT_BLUE)
+      .clickEvent(runCommand(commandFunction.apply(currentPage - 1)))
+      .hoverEvent(text("Click for previous page.", EMERALD))
+      .build();
+  }
+
+  private static @NonNull Component nextPageButton(final int currentPage, final @NonNull IntFunction<String> commandFunction) {
+    return text()
+      .content("→")
+      .color(BRIGHT_BLUE)
+      .clickEvent(runCommand(commandFunction.apply(currentPage + 1)))
+      .hoverEvent(text("Click for next page.", EMERALD))
+      .build();
+  }
+
+  private static @NonNull Component pageOutOfRange(final int currentPage, final int pages) {
+    return text()
+      .color(MUSTARD)
+      .content("Page ")
+      .append(text(currentPage, PURPLE))
+      .append(text(" is out of range"))
+      .append(text('!'))
+      .append(text(" There are only "))
+      .append(text(pages, PURPLE))
+      .append(text(" pages of results."))
+      .build();
   }
 
   private void executeModInfo(final @NonNull CommandContext<Commander> ctx) {
-    final ModDescription mod = ctx.get(MOD_ARGUMENT_NAME);
+    final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
     final TextComponent.Builder builder = text()
       .append(coloredBoldModName(mod))
       .color(MUSTARD)
@@ -194,7 +270,7 @@ final class ModsCommand implements RegistrableCommand {
                 .append(text("'s child mods."))
                 .build()
             )
-            .clickEvent(runCommand(String.format("/%s %s children", this.label, mod.modId())))
+            .clickEvent(runCommand(String.format("/%s mod %s children", this.label, mod.modId())))
         );
       }
     }
@@ -267,7 +343,7 @@ final class ModsCommand implements RegistrableCommand {
           .color(EMERALD)
           .content("Click to see more about ")
           .append(coloredBoldModName(mod))
-          .append(text("!"))
+          .append(text('!'))
           .build());
   }
 
@@ -276,6 +352,6 @@ final class ModsCommand implements RegistrableCommand {
   }
 
   private @NonNull ClickEvent modInfo(final @NonNull ModDescription description) {
-    return runCommand(String.format("/%s %s", this.label, description.modId()));
+    return runCommand(String.format("/%s mod %s", this.label, description.modId()));
   }
 }

@@ -24,13 +24,15 @@ import java.nio.file.Path;
 import static java.util.stream.Collectors.joining;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
+import static net.kyori.adventure.text.event.ClickEvent.openFile;
 import static xyz.jpenilla.modscommand.Colors.EMERALD;
 import static xyz.jpenilla.modscommand.Colors.PINK;
-import static xyz.jpenilla.modscommand.Mods.MODS;
+import static xyz.jpenilla.modscommand.Mods.mods;
 
 final class DumpModsCommand implements RegistrableCommand {
   private final String label;
   private final CommandPermission permission;
+  private final Path dumpFile;
 
   DumpModsCommand(
     final @NonNull String primaryAlias,
@@ -38,6 +40,7 @@ final class DumpModsCommand implements RegistrableCommand {
   ) {
     this.label = primaryAlias;
     this.permission = permission;
+    this.dumpFile = FabricLoader.getInstance().getGameDir().resolve("installed-mods.yml");
   }
 
   @Override
@@ -60,7 +63,10 @@ final class DumpModsCommand implements RegistrableCommand {
     }
     final TextComponent.Builder message = text()
       .content("Saved list of installed mods to ")
-      .append(text("installed-mods.yml", PINK))
+      .append(text()
+        .content("installed-mods.yml")
+        .color(PINK)
+        .clickEvent(openFile(this.dumpFile.toAbsolutePath().toString()))) // only works for client commands
       .append(text(" in the game directory."));
     ctx.getSender().sendMessage(message);
     final TextComponent.Builder copyMessage = text()
@@ -95,7 +101,7 @@ final class DumpModsCommand implements RegistrableCommand {
     java.node("version").set(System.getProperty("java.version"));
 
     final ConfigurationNode modsNode = root.node("mods");
-    for (final ModDescription mod : MODS.topLevelMods()) {
+    for (final ModDescription mod : mods().topLevelMods()) {
       serializeModDescriptionToNode(modsNode, mod);
     }
 

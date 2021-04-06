@@ -1,13 +1,12 @@
 package xyz.jpenilla.modscommand;
 
+import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.fabric.FabricClientCommandManager;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import net.fabricmc.api.ClientModInitializer;
+import org.checkerframework.checker.nullness.qual.NonNull;
 
-import java.util.stream.Stream;
-
-import static cloud.commandframework.minecraft.extras.AudienceProvider.nativeAudience;
+import java.util.function.Function;
 
 public final class ModsCommandClientModInitializer implements ClientModInitializer {
   @Override
@@ -17,16 +16,14 @@ public final class ModsCommandClientModInitializer implements ClientModInitializ
       Commander.ClientCommander::new,
       commander -> ((Commander.ClientCommander) commander).source()
     );
-    new MinecraftExceptionHandler<Commander>()
-      .withDefaultHandlers()
-      .apply(manager, nativeAudience());
-    ModDescriptionArgument.registerParser(manager);
+    Commands.configureCommandManager(manager);
 
-    Stream.of(
-      new ModsCommand("clientmods", null),
-      new ModsCommand("modscommand:clientmods", null),
-      new DumpModsCommand("dumpclientmods", null),
-      new DumpModsCommand("modscommand:dumpclientmods", null)
-    ).forEach(command -> command.register(manager));
+    this.registerCommand(manager, "clientmods", label -> new ModsCommand(label, null));
+    this.registerCommand(manager, "dumpclientmods", label -> new ModsCommand(label, null));
+  }
+
+  private void registerCommand(final @NonNull CommandManager<Commander> commandManager, final @NonNull String label, final @NonNull Function<String, RegistrableCommand> factory) {
+    factory.apply(label).register(commandManager);
+    factory.apply(String.format("modscommand:%s", label)).register(commandManager);
   }
 }
