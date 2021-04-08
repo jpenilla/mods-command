@@ -5,7 +5,6 @@ import cloud.commandframework.CommandManager;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.permission.CommandPermission;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.metadata.Person;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -21,7 +20,6 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static java.util.stream.Collectors.joining;
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
 import static net.kyori.adventure.text.event.ClickEvent.openFile;
@@ -57,7 +55,7 @@ final class DumpModsCommand implements RegistrableCommand {
     final String dump;
     try {
       dump = createDump();
-      writeDump(dump);
+      this.writeDump(dump);
     } catch (final IOException ex) {
       throw new RuntimeException("Failed to create mod list dump.", ex);
     }
@@ -75,6 +73,10 @@ final class DumpModsCommand implements RegistrableCommand {
       .clickEvent(copyToClipboard(dump))
       .hoverEvent(text("Click to copy to clipboard!", EMERALD));
     ctx.getSender().sendMessage(copyMessage);
+  }
+
+  private void writeDump(final @NonNull String dump) throws IOException {
+    Files.write(this.dumpFile, dump.getBytes(StandardCharsets.UTF_8));
   }
 
   private static @NonNull String createDump() throws ConfigurateException {
@@ -109,20 +111,13 @@ final class DumpModsCommand implements RegistrableCommand {
     return stringWriter.toString();
   }
 
-  private static void writeDump(final @NonNull String dump) throws IOException {
-    final Path file = FabricLoader.getInstance().getGameDir().resolve("installed-mods.yml");
-    Files.write(file, dump.getBytes(StandardCharsets.UTF_8));
-  }
-
   private static void serializeModDescriptionToNode(final @NonNull ConfigurationNode node, final @NonNull ModDescription mod) throws SerializationException {
     final ConfigurationNode modNode = node.appendListNode();
     modNode.node("mod-id").set(mod.modId());
     modNode.node("name").set(mod.name());
     modNode.node("version").set(mod.version());
     if (!mod.authors().isEmpty()) {
-      modNode.node("authors").set(
-        mod.authors().stream().map(Person::getName).collect(joining(", "))
-      );
+      modNode.node("authors").set(String.join(", ", mod.authors()));
     }
     for (final ModDescription child : mod.children()) {
       serializeModDescriptionToNode(modNode.node("children"), child);

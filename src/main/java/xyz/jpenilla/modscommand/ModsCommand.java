@@ -4,12 +4,12 @@ import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.arguments.CommandArgument;
 import cloud.commandframework.arguments.standard.IntegerArgument;
+import cloud.commandframework.arguments.standard.StringArgument;
 import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.keys.CloudKey;
 import cloud.commandframework.keys.SimpleCloudKey;
 import cloud.commandframework.permission.CommandPermission;
 import io.leangen.geantyref.TypeToken;
-import net.fabricmc.loader.api.metadata.Person;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentLike;
@@ -18,12 +18,18 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.List;
+import java.util.Locale;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
+import static java.util.Comparator.comparing;
+import static java.util.stream.Collectors.toList;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.newline;
 import static net.kyori.adventure.text.Component.space;
@@ -41,12 +47,14 @@ import static xyz.jpenilla.modscommand.Colors.BRIGHT_BLUE;
 import static xyz.jpenilla.modscommand.Colors.EMERALD;
 import static xyz.jpenilla.modscommand.Colors.MIDNIGHT_BLUE;
 import static xyz.jpenilla.modscommand.Colors.MUSTARD;
+import static xyz.jpenilla.modscommand.Colors.PINK;
 import static xyz.jpenilla.modscommand.Colors.PURPLE;
 import static xyz.jpenilla.modscommand.Mods.mods;
 
 final class ModsCommand implements RegistrableCommand {
   private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = SimpleCloudKey.of("mod_id", TypeToken.get(ModDescription.class));
   private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page", TypeToken.get(Integer.class));
+  private static final CloudKey<String> QUERY_ARGUMENT_KEY = SimpleCloudKey.of("query", TypeToken.get(String.class));
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?"); // copied from adventure-text-serializer-legacy
   private static final Component GRAY_SEPARATOR = text(':', GRAY);
   private static final Component DASH = text(" - ", MIDNIGHT_BLUE);
@@ -85,6 +93,11 @@ final class ModsCommand implements RegistrableCommand {
       mod.literal("children")
         .argument(pageArgument())
         .handler(this::executeListChildren)
+    );
+    manager.command(
+      mods.literal("search")
+        .argument(StringArgument.greedy(QUERY_ARGUMENT_KEY.getName()))
+        .handler(this::executeSearch)
     );
   }
 
@@ -133,6 +146,64 @@ final class ModsCommand implements RegistrableCommand {
       .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
       .build();
     pagination.render(mod.children(), page, 8).forEach(ctx.getSender()::sendMessage);
+  }
+
+  private void executeSearch(final @NonNull CommandContext<Commander> ctx) {
+    final String rawQuery = ctx.getOptional(QUERY_ARGUMENT_KEY).orElse("").toLowerCase(Locale.ROOT).trim();
+    final String[] split = rawQuery.split(" ");
+    int page = 1;
+    String tempQuery = rawQuery;
+    if (split.length > 1) {
+      try {
+        final String pageText = split[split.length - 1];
+        page = Integer.parseInt(pageText);
+        tempQuery = rawQuery.substring(0, Math.max(rawQuery.lastIndexOf(pageText) - 1, 0));
+      } catch (final NumberFormatException ex) {
+        page = 1;
+        tempQuery = rawQuery;
+      }
+    }
+    final String query = tempQuery;
+
+    final List<ModDescription> results = mods().allMods()
+      .filter(matchesQuery(query))
+      .flatMap(match -> Stream.concat(match.parentStream(), match.selfAndChildren()))
+      .distinct()
+      .sorted(comparing(ModDescription::modId))
+      .collect(toList());
+    if (results.isEmpty()) {
+      ctx.getSender().sendMessage(
+        text()
+          .color(MUSTARD)
+          .content("No results for query '")
+          .append(text(query, PURPLE))
+          .append(text("'."))
+      );
+      return;
+    }
+    final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
+      .header((currentPage, pages) -> TextComponent.ofChildren(
+        text()
+          .decorate(BOLD)
+          .append(text(results.size(), PINK))
+          .append(text(" results for query", PURPLE)),
+        GRAY_SEPARATOR,
+        space(),
+        text(query, MUSTARD)
+      ))
+      .footer(this.footerRenderer(p -> String.format("/%s search %s %d", this.label, query, p)))
+      .pageOutOfRange(ModsCommand::pageOutOfRange)
+      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .build();
+    pagination.render(results, page, 8).forEach(ctx.getSender()::sendMessage);
+  }
+
+  private static @NonNull Predicate<ModDescription> matchesQuery(final @NonNull String query) {
+    return mod -> mod.modId().toLowerCase(Locale.ROOT).contains(query)
+      || mod.name().toLowerCase(Locale.ROOT).contains(query)
+      || "clientsided client-sided client mods".contains(query) && mod.environment() == ModDescription.Environment.CLIENT
+      || "serversided server-sided server mods".contains(query) && mod.environment() == ModDescription.Environment.SERVER
+      || mod.authors().stream().anyMatch(author -> author.toLowerCase(Locale.ROOT).contains(query));
   }
 
   private @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> footerRenderer(final @NonNull IntFunction<String> commandFunction) {
@@ -212,7 +283,6 @@ final class ModsCommand implements RegistrableCommand {
         .append(labelled(
           "authors",
           mod.authors().stream()
-            .map(Person::getName)
             .map(Component::text)
             .collect(toComponent(text(", ", GRAY)))
         ));
@@ -223,7 +293,6 @@ final class ModsCommand implements RegistrableCommand {
         .append(labelled(
           "contributors",
           mod.contributors().stream()
-            .map(Person::getName)
             .map(Component::text)
             .collect(toComponent(text(", ", GRAY)))
         ));
@@ -259,17 +328,15 @@ final class ModsCommand implements RegistrableCommand {
       if (mod.children().size() > 5) {
         builder.append(
           text()
-            .content(", and " + (mod.children().size() - 5) + " more...")
-            .decorate(ITALIC)
             .color(GRAY)
-            .hoverEvent(
-              text()
-                .color(EMERALD)
-                .content("Click to see all of ")
-                .append(coloredBoldModName(mod))
-                .append(text("'s child mods."))
-                .build()
-            )
+            .decorate(ITALIC)
+            .content(", and " + (mod.children().size() - 5) + " more...")
+            .hoverEvent(text()
+              .color(EMERALD)
+              .content("Click to see all of ")
+              .append(coloredBoldModName(mod))
+              .append(text("'s child mods."))
+              .build())
             .clickEvent(runCommand(String.format("/%s mod %s children", this.label, mod.modId())))
         );
       }
@@ -324,7 +391,7 @@ final class ModsCommand implements RegistrableCommand {
       .append(text(String.format(" (%s) ", mod.modId()), GRAY, ITALIC))
       .append(text(String.format("v%s", mod.version()), EMERALD));
     if (!mod.children().isEmpty()) {
-      modBuilder.append(text(String.format(" (%d child mods)", mod.children().size()), GRAY, ITALIC));
+      modBuilder.append(text(String.format(" (%d child mods)", mod.childrenStream().count()), GRAY, ITALIC));
     }
     return modBuilder.build();
   }

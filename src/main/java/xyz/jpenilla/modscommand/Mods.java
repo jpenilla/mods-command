@@ -8,7 +8,6 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,8 @@ import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -37,7 +38,7 @@ final class Mods {
       return potential;
     }
     return this.mods.values().stream()
-      .flatMap(desc -> desc.children().stream())
+      .flatMap(ModDescription::childrenStream)
       .filter(it -> it.modId().equals(modId))
       .findFirst()
       .orElse(null);
@@ -70,28 +71,30 @@ final class Mods {
       final List<ModDescription> fapiModules = descriptions.values().stream()
         .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(FABRIC_API_MODULE_MARKER))
         .collect(toList());
-      fapiModules.forEach(module -> descriptions.remove(module.modId()));
-      fapi.children().addAll(fapiModules);
+      fapiModules.forEach(module -> {
+        descriptions.remove(module.modId());
+        ((ModDescription.AbstractModDescription) fapi).addChild(module);
+      });
     }
 
-    final List<ModDescription> loomGenerated = descriptions.values().stream()
+    final List<ModDescription> loomGeneratedMods = descriptions.values().stream()
       .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(LOOM_GENERATED_MARKER))
       .collect(toList());
-    loomGenerated.forEach(module -> descriptions.remove(module.modId()));
-    if (!loomGenerated.isEmpty()) {
+    loomGeneratedMods.forEach(module -> descriptions.remove(module.modId()));
+    if (!loomGeneratedMods.isEmpty()) {
       descriptions.put(
         "loom-generated",
         new ModDescription.ModDescriptionImpl(
-          loomGenerated,
+          loomGeneratedMods,
           "loom-generated",
           "Loom Generated",
           "1.0",
           "category",
           "Parent mod to all Loom-generated library mods.",
-          Collections.emptyList(),
-          Collections.emptyList(),
-          Collections.emptyList(),
-          Collections.emptyMap(),
+          emptyList(),
+          emptyList(),
+          emptyList(),
+          emptyMap(),
           ModDescription.Environment.UNIVERSAL
         )
       );

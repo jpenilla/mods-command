@@ -9,18 +9,23 @@ import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toList;
 import static net.kyori.adventure.text.Component.text;
 import static xyz.jpenilla.modscommand.Colors.EMERALD;
 
 interface ModDescription extends Examinable {
+  @Nullable ModDescription parent();
+
   @NonNull List<@NonNull ModDescription> children();
 
   @NonNull String modId();
@@ -33,9 +38,9 @@ interface ModDescription extends Examinable {
 
   @NonNull String description();
 
-  @NonNull Collection<Person> authors();
+  @NonNull Collection<String> authors();
 
-  @NonNull Collection<Person> contributors();
+  @NonNull Collection<String> contributors();
 
   @NonNull Collection<String> licenses();
 
@@ -43,11 +48,28 @@ interface ModDescription extends Examinable {
 
   @NonNull Environment environment();
 
+  default @NonNull Stream<@NonNull ModDescription> parentStream() {
+    final ModDescription parent = this.parent();
+    if (parent == null) {
+      return Stream.empty();
+    }
+    return parent.selfAndParents();
+  }
+
+  default @NonNull Stream<@NonNull ModDescription> selfAndParents() {
+    return Stream.concat(Stream.of(this), this.parentStream());
+  }
+
+  default @NonNull Stream<@NonNull ModDescription> childrenStream() {
+    return this.children().stream().flatMap(ModDescription::selfAndChildren);
+  }
+
   default @NonNull Stream<@NonNull ModDescription> selfAndChildren() {
-    return Stream.concat(Stream.of(this), this.children().stream());
+    return Stream.concat(Stream.of(this), this.childrenStream());
   }
 
   default @NonNull Stream<@NonNull ExaminableProperty> examinableProperties() {
+    final ModDescription parent = this.parent();
     return Stream.of(
       ExaminableProperty.of("modId", this.modId()),
       ExaminableProperty.of("name", this.name()),
@@ -59,6 +81,7 @@ interface ModDescription extends Examinable {
       ExaminableProperty.of("licenses", this.licenses()),
       ExaminableProperty.of("contact", this.contact()),
       ExaminableProperty.of("environment", this.environment()),
+      ExaminableProperty.of("parent", parent == null ? null : parent.modId()),
       ExaminableProperty.of("children", this.children())
     );
   }
@@ -86,6 +109,33 @@ interface ModDescription extends Examinable {
   }
 
   abstract class AbstractModDescription implements ModDescription {
+    private final List<ModDescription> children = new ArrayList<>();
+    private ModDescription parent = null;
+
+    protected AbstractModDescription(final @NonNull List<@NonNull ModDescription> children) {
+      for (final ModDescription child : children) {
+        this.addChild(child);
+      }
+    }
+
+    public void addChild(final @NonNull ModDescription newChild) {
+      this.children.add(newChild);
+      if (!(newChild instanceof AbstractModDescription)) {
+        throw new IllegalArgumentException(String.format("Cannot add non-AbstractModDescription as a child. Attempted to add %s '%s'.", newChild.getClass().getSimpleName(), newChild));
+      }
+      ((AbstractModDescription) newChild).parent = this;
+    }
+
+    @Override
+    public @Nullable ModDescription parent() {
+      return this.parent;
+    }
+
+    @Override
+    public @NonNull List<@NonNull ModDescription> children() {
+      return Collections.unmodifiableList(this.children);
+    }
+
     @Override
     public String toString() {
       return StringExaminer.simpleEscaping().examine(this);
@@ -93,14 +143,13 @@ interface ModDescription extends Examinable {
   }
 
   final class ModDescriptionImpl extends AbstractModDescription {
-    private final List<ModDescription> children = new ArrayList<>();
     private final String modId;
     private final String name;
     private final String version;
     private final String type;
     private final String description;
-    private final Collection<Person> authors;
-    private final Collection<Person> contributors;
+    private final Collection<String> authors;
+    private final Collection<String> contributors;
     private final Collection<String> licenses;
     private final Map<String, String> contact;
     private final Environment environment;
@@ -112,13 +161,13 @@ interface ModDescription extends Examinable {
       final @NonNull String version,
       final @NonNull String type,
       final @NonNull String description,
-      final @NonNull Collection<@NonNull Person> authors,
-      final @NonNull Collection<@NonNull Person> contributors,
+      final @NonNull Collection<@NonNull String> authors,
+      final @NonNull Collection<@NonNull String> contributors,
       final @NonNull Collection<@NonNull String> licenses,
       final @NonNull Map<@NonNull String, @NonNull String> contact,
       final @NonNull Environment environment
     ) {
-      this.children.addAll(children);
+      super(children);
       this.modId = modId;
       this.name = name;
       this.version = version;
@@ -129,11 +178,6 @@ interface ModDescription extends Examinable {
       this.licenses = licenses;
       this.contact = contact;
       this.environment = environment;
-    }
-
-    @Override
-    public @NonNull List<@NonNull ModDescription> children() {
-      return this.children;
     }
 
     @Override
@@ -162,12 +206,12 @@ interface ModDescription extends Examinable {
     }
 
     @Override
-    public @NonNull Collection<@NonNull Person> authors() {
+    public @NonNull Collection<@NonNull String> authors() {
       return this.authors;
     }
 
     @Override
-    public @NonNull Collection<@NonNull Person> contributors() {
+    public @NonNull Collection<@NonNull String> contributors() {
       return this.contributors;
     }
 
@@ -189,23 +233,17 @@ interface ModDescription extends Examinable {
 
   final class WrappingModDescription extends AbstractModDescription {
     private final ModMetadata metadata;
-    private final List<ModDescription> children;
 
     public WrappingModDescription(
       final @NonNull ModMetadata metadata,
       final @NonNull ModDescription @NonNull ... children
     ) {
+      super(Arrays.asList(children));
       this.metadata = metadata;
-      this.children = new ArrayList<>(Arrays.asList(children));
     }
 
     public @NonNull ModMetadata wrapped() {
       return this.metadata;
-    }
-
-    @Override
-    public @NonNull List<@NonNull ModDescription> children() {
-      return this.children;
     }
 
     @Override
@@ -234,17 +272,21 @@ interface ModDescription extends Examinable {
     }
 
     @Override
-    public @NonNull Collection<Person> authors() {
-      return this.metadata.getAuthors();
+    public @NonNull Collection<@NonNull String> authors() {
+      return this.metadata.getAuthors().stream()
+        .map(Person::getName)
+        .collect(toList());
     }
 
     @Override
-    public @NonNull Collection<Person> contributors() {
-      return this.metadata.getContributors();
+    public @NonNull Collection<@NonNull String> contributors() {
+      return this.metadata.getContributors().stream()
+        .map(Person::getName)
+        .collect(toList());
     }
 
     @Override
-    public @NonNull Collection<String> licenses() {
+    public @NonNull Collection<@NonNull String> licenses() {
       return this.metadata.getLicense();
     }
 
