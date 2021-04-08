@@ -57,6 +57,7 @@ final class Mods {
     return Holder.INSTANCE;
   }
 
+  @SuppressWarnings("UnstableApiUsage")
   private static @NonNull Map<String, ModDescription> loadModDescriptions() {
     final FabricLoader loader = FabricLoader.getInstance();
 
