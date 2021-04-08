@@ -26,13 +26,16 @@ dependencies {
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0-SNAPSHOT"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0-SNAPSHOT"))
+
   modImplementation(include("net.kyori", "adventure-platform-fabric", "4.0.0-SNAPSHOT") {
     exclude("ca.stellardrift", "colonel")
   })
-  //modImplementation(include("ca.stellardrift", "confabricate", "2.0.3"))
+
+  modImplementation(include("ca.stellardrift", "confabricate", "2.0.3"))
   implementation(include("org.spongepowered", "configurate-core", "4.0.0"))
   implementation(include("org.spongepowered", "configurate-yaml", "4.0.0"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
+
   compileOnly("org.checkerframework", "checker-qual", "3.11.0")
 }
 

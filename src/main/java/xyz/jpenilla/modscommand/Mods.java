@@ -60,9 +60,12 @@ final class Mods {
   private static @NonNull Map<String, ModDescription> loadModDescriptions() {
     final FabricLoader loader = FabricLoader.getInstance();
 
+    final List<String> hiddenModIds = ModsCommandModInitializer.instance().config().hiddenModIds();
+
     final Map<String, ModDescription> descriptions = loader.getAllMods().stream()
       .map(ModContainer::getMetadata)
       .map(WrappingModDescription::new)
+      .filter(mod -> !hiddenModIds.contains(mod.modId()))
       .sorted(comparing(ModDescription::modId))
       .collect(toLinkedHashMap());
 
