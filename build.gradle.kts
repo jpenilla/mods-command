@@ -50,7 +50,7 @@ tasks {
         "\${VERSION}" to project.version as String,
         "\${GITHUB_URL}" to githubUrl,
         "\${DESCRIPTION}" to project.description as String
-      ).entries.forEach { (k, v) ->
+      ).forEach { (k, v) ->
         filter { it.replace(k, v) }
       }
     }
