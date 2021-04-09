@@ -109,7 +109,7 @@ final class Mods {
           loomGeneratedMods,
           "loom-generated",
           "Loom Generated",
-          "1.0",
+          "",
           "category",
           "Parent mod to all Loom-generated library mods.",
           emptyList(),

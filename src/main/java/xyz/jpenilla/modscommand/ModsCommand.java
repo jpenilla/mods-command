@@ -283,11 +283,13 @@ final class ModsCommand implements RegistrableCommand {
       .color(MUSTARD)
       .append(newline())
       .append(space())
-      .append(labelled("mod id", text(mod.modId())))
-      .append(newline())
-      .append(space())
-      .append(labelled("version", text(mod.version())));
+      .append(labelled("mod id", text(mod.modId())));
 
+    if (!mod.version().isEmpty()) {
+      builder.append(newline())
+        .append(space())
+        .append(labelled("version", text(mod.version())));
+    }
     if (!mod.description().isEmpty()) {
       builder.append(newline())
         .append(space())
@@ -331,6 +333,17 @@ final class ModsCommand implements RegistrableCommand {
         .append(space())
         .append(labelled("environment", mod.environment().display()));
     }
+    final ModDescription parent = mod.parent();
+    if (parent != null) {
+      builder.append(newline())
+        .append(space())
+        .append(labelled(
+          "parent mod",
+          text()
+            .content(parent.modId())
+            .apply(this.modClickAndHover(parent))
+        ));
+    }
     if (!mod.children().isEmpty()) {
       builder.append(newline())
         .append(space())
@@ -373,7 +386,7 @@ final class ModsCommand implements RegistrableCommand {
     ctx.getSender().sendMessage(builder);
   }
 
-  private static @NonNull Component labelled(final @NonNull String label, final @NonNull Component value) {
+  private static @NonNull Component labelled(final @NonNull String label, final @NonNull ComponentLike value) {
     final TextComponent.Builder builder = text()
       .append(text(label, BLUE))
       .append(GRAY_SEPARATOR);
@@ -401,15 +414,17 @@ final class ModsCommand implements RegistrableCommand {
   }
 
   private @NonNull Component shortModDescription(final @NonNull ModDescription mod) {
-    final TextComponent.Builder modBuilder = text()
+    final TextComponent.Builder builder = text()
       .apply(this.modClickAndHover(mod))
       .append(text(mod.name(), BLUE))
-      .append(text(String.format(" (%s) ", mod.modId()), GRAY, ITALIC))
-      .append(text(String.format("v%s", mod.version()), EMERALD));
-    if (!mod.children().isEmpty()) {
-      modBuilder.append(text(String.format(" (%d child mods)", mod.childrenStream().count()), GRAY, ITALIC));
+      .append(text(String.format(" (%s)", mod.modId()), GRAY, ITALIC));
+    if (!mod.version().isEmpty()) {
+      builder.append(text(String.format(" v%s", mod.version()), EMERALD));
     }
-    return modBuilder.build();
+    if (!mod.children().isEmpty()) {
+      builder.append(text(String.format(" (%d child mods)", mod.childrenStream().count()), GRAY, ITALIC));
+    }
+    return builder.build();
   }
 
   private @NonNull Component modIdWithClickAndHover(final @NonNull ModDescription mod) {
