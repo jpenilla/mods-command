@@ -1,3 +1,19 @@
+/*
+ * Mods Command
+ * Copyright (c) 2020 Jason Penilla
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package xyz.jpenilla.modscommand;
 
 import net.kyori.adventure.text.Component;
@@ -16,13 +32,13 @@ import static java.util.Objects.requireNonNull;
 import static net.kyori.adventure.text.Component.empty;
 
 interface Pagination<T> {
-  @NonNull ComponentLike header(final int page, final int pages);
+  @NonNull ComponentLike header(int page, int pages);
 
-  @NonNull ComponentLike footer(final int page, final int pages);
+  @NonNull ComponentLike footer(int page, int pages);
 
-  @NonNull ComponentLike pageOutOfRange(final int page, final int pages);
+  @NonNull ComponentLike pageOutOfRange(int page, int pages);
 
-  @NonNull ComponentLike item(final @NonNull T item, final boolean lastOfPage);
+  @NonNull ComponentLike item(@NonNull T item, boolean lastOfPage);
 
   default @NonNull List<@NonNull Component> render(
     final @NonNull Collection<@NonNull T> content,
@@ -135,22 +151,22 @@ interface Pagination<T> {
       }
 
       @Override
-      public @NonNull ComponentLike header(int page, int pages) {
+      public @NonNull ComponentLike header(final int page, final int pages) {
         return this.headerRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike footer(int page, int pages) {
+      public @NonNull ComponentLike footer(final int page, final int pages) {
         return this.footerRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike pageOutOfRange(int page, int pages) {
+      public @NonNull ComponentLike pageOutOfRange(final int page, final int pages) {
         return this.pageOutOfRangeRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike item(@NonNull T item, boolean lastOfPage) {
+      public @NonNull ComponentLike item(final @NonNull T item, final boolean lastOfPage) {
         return this.itemRenderer.apply(item, lastOfPage);
       }
     }

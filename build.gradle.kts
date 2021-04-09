@@ -1,12 +1,16 @@
 plugins {
   id("fabric-loom") version "0.7-SNAPSHOT"
+  val indraVersion = "1.3.1"
+  id("net.kyori.indra") version indraVersion
+  id("net.kyori.indra.checkstyle") version indraVersion
+  id("net.kyori.indra.license-header") version indraVersion
   `maven-publish`
   `java-library`
 }
 
 version = "0.1.0"
 group = "xyz.jpenilla"
-description = "Adds commands to list and get info about installed mods."
+description = "Adds commands to list, search, and get information about installed mods."
 val githubUrl = "https://github.com/jpenilla/ModsCommand"
 
 repositories {
@@ -55,8 +59,8 @@ tasks {
     options.encoding = Charsets.UTF_8.toString()
   }
   jar {
-    from("license.txt") {
-      rename { "license_${project.name}.txt" }
+    from("LICENSE") {
+      rename { "LICENSE_${project.name}" }
     }
   }
   remapJar {
@@ -64,8 +68,14 @@ tasks {
   }
 }
 
-java {
-  sourceCompatibility = JavaVersion.toVersion(8)
-  targetCompatibility = JavaVersion.toVersion(8)
-  withSourcesJar()
+indra {
+  javaVersions.target.set(8)
+  github("jpenilla", "ModsCommand") {
+    issues = true
+  }
+  apache2License()
+}
+
+license {
+  header = file("LICENSE_HEADER")
 }
