@@ -20,8 +20,8 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @ConfigSerializable
 public final class Config {
@@ -30,10 +30,10 @@ public final class Config {
   @ConfigSerializable
   public static final class HiddenMods {
     @Comment("Set the list of mod-ids to hide/ignore.")
-    private List<String> hiddenModIds = new ArrayList<>();
+    private Set<String> hiddenModIds = new HashSet<>();
   }
 
-  public @NonNull List<String> hiddenModIds() {
+  public @NonNull Set<String> hiddenModIds() {
     return this.hiddenMods.hiddenModIds;
   }
 }

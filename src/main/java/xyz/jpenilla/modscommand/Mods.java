@@ -27,6 +27,7 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
@@ -77,7 +78,7 @@ final class Mods {
   private static @NonNull Map<String, ModDescription> loadModDescriptions() {
     final FabricLoader loader = FabricLoader.getInstance();
 
-    final List<String> hiddenModIds = ModsCommandModInitializer.instance().config().hiddenModIds();
+    final Set<String> hiddenModIds = ModsCommandModInitializer.instance().config().hiddenModIds();
 
     final Map<String, ModDescription> descriptions = loader.getAllMods().stream()
       .map(ModContainer::getMetadata)
