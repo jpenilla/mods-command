@@ -36,7 +36,6 @@ dependencies {
   })
 
   modImplementation(include("ca.stellardrift", "confabricate", "2.0.3"))
-  implementation(include("org.spongepowered", "configurate-core", "4.0.0"))
   implementation(include("org.spongepowered", "configurate-yaml", "4.0.0"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
