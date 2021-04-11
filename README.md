@@ -1,6 +1,6 @@
 # Mods Command
 
-![version badge](https://img.shields.io/github/v/release/jpenilla/ModsCommand?color=blue&label=version)
+![version badge](https://img.shields.io/github/v/release/jpenilla/ModsCommand?label=version)
 
 A Fabric mod adding commands to list, search, and get information about installed mods.
 
