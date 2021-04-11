@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "id": "mods-command",
-  "version": "${VERSION}",
+  "version": "${version}",
   "name": "Mods Command",
-  "description": "${DESCRIPTION}",
+  "description": "${description}",
   "authors": [
     "jmp"
   ],
   "contact": {
-    "homepage": "${GITHUB_URL}",
-    "sources": "${GITHUB_URL}",
-    "issues": "${GITHUB_URL}/issues"
+    "homepage": "${github_url}",
+    "sources": "${github_url}",
+    "issues": "${github_url}/issues"
   },
   "icon": "assets/mods-command/icon.png",
   "environment": "*",

@@ -8,7 +8,7 @@ plugins {
   `java-library`
 }
 
-version = "0.1.0"
+version = "1.0.0"
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
 val githubUrl = "https://github.com/jpenilla/ModsCommand"
@@ -46,13 +46,11 @@ dependencies {
 tasks {
   processResources {
     filesMatching("fabric.mod.json") {
-      mapOf(
-        "\${VERSION}" to project.version as String,
-        "\${GITHUB_URL}" to githubUrl,
-        "\${DESCRIPTION}" to project.description as String
-      ).forEach { (k, v) ->
-        filter { it.replace(k, v) }
-      }
+      expand(
+        "version" to project.version,
+        "github_url" to githubUrl,
+        "description" to project.description
+      )
     }
   }
   withType<JavaCompile> {
