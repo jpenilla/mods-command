@@ -8,7 +8,7 @@ plugins {
   `java-library`
 }
 
-version = "1.0.0"
+version = "1.0.1"
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
 val githubUrl = "https://github.com/jpenilla/ModsCommand"
