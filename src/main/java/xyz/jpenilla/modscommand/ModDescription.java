@@ -135,11 +135,11 @@ interface ModDescription extends Examinable {
     }
 
     public void addChild(final @NonNull ModDescription newChild) {
-      this.children.add(newChild);
       if (!(newChild instanceof AbstractModDescription)) {
         throw new IllegalArgumentException(String.format("Cannot add non-AbstractModDescription as a child. Attempted to add %s '%s'.", newChild.getClass().getSimpleName(), newChild));
       }
       ((AbstractModDescription) newChild).parent = this;
+      this.children.add(newChild);
     }
 
     @Override

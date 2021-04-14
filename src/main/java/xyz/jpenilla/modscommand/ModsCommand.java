@@ -217,8 +217,8 @@ final class ModsCommand implements RegistrableCommand {
   private static @NonNull Predicate<ModDescription> matchesQuery(final @NonNull String query) {
     return mod -> mod.modId().toLowerCase(Locale.ROOT).contains(query)
       || mod.name().toLowerCase(Locale.ROOT).contains(query)
-      || "clientsided client-sided client mods".contains(query) && mod.environment() == ModDescription.Environment.CLIENT
-      || "serversided server-sided server mods".contains(query) && mod.environment() == ModDescription.Environment.SERVER
+      || "clientsided client-sided client sided".contains(query) && mod.environment() == ModDescription.Environment.CLIENT
+      || "serversided server-sided server sided".contains(query) && mod.environment() == ModDescription.Environment.SERVER
       || mod.authors().stream().anyMatch(author -> author.toLowerCase(Locale.ROOT).contains(query));
   }
 
