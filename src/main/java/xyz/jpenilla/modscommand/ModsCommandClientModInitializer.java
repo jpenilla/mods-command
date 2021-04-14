@@ -35,7 +35,7 @@ public final class ModsCommandClientModInitializer implements ClientModInitializ
     Commands.configureCommandManager(manager);
 
     this.registerCommand(manager, "clientmods", label -> new ModsCommand(label, null));
-    this.registerCommand(manager, "dumpclientmods", label -> new ModsCommand(label, null));
+    this.registerCommand(manager, "dumpclientmods", label -> new DumpModsCommand(label, null));
   }
 
   private void registerCommand(final @NonNull CommandManager<Commander> commandManager, final @NonNull String label, final @NonNull Function<String, RegistrableCommand> factory) {
