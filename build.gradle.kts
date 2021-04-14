@@ -22,7 +22,7 @@ repositories {
   maven("https://repo.jpenilla.xyz/snapshots/")
 }
 
-val minecraftVersion = "21w14a"
+val minecraftVersion = "21w15a"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
@@ -33,7 +33,7 @@ dependencies {
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0-SNAPSHOT"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0-SNAPSHOT"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "4.0.0-21w14a-SNAPSHOT") {
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "4.0.0+1.17-SNAPSHOT") {
     exclude("ca.stellardrift", "colonel")
   })
 
