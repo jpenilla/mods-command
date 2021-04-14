@@ -77,10 +77,13 @@ final class DumpModsCommand implements RegistrableCommand {
     }
     final TextComponent.Builder message = text()
       .content("Saved list of installed mods to ")
-      .append(text()
-        .content("installed-mods.yml")
-        .color(PINK)
-        .clickEvent(openFile(this.dumpFile.toAbsolutePath().toString()))) // only works for client commands
+      .append(text(builder -> {
+        builder.content(this.dumpFile.getFileName().toString()).color(PINK);
+        if (ctx.getSender() instanceof Commander.ClientCommander) {
+          builder.clickEvent(openFile(this.dumpFile.toAbsolutePath().toString()))
+            .hoverEvent(text("Click to open file!", EMERALD));
+        }
+      }))
       .append(text(" in the game directory."));
     ctx.getSender().sendMessage(message);
     final TextComponent.Builder copyMessage = text()
