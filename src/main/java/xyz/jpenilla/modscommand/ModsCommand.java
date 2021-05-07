@@ -120,7 +120,7 @@ final class ModsCommand implements RegistrableCommand {
   private static @NonNull CommandArgument<Commander, Integer> pageArgument() {
     return IntegerArgument.<Commander>newBuilder(PAGE_ARGUMENT_KEY.getName())
       .withMin(1)
-      .asOptionalWithDefault("1")
+      .asOptionalWithDefault(1)
       .build();
   }
 

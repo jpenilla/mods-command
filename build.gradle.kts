@@ -1,6 +1,6 @@
 plugins {
   id("fabric-loom") version "0.7-SNAPSHOT"
-  val indraVersion = "1.3.1"
+  val indraVersion = "2.0.2"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
@@ -66,13 +66,13 @@ tasks {
 }
 
 indra {
-  javaVersions.target.set(8)
-  github("jpenilla", "ModsCommand") {
-    issues = true
+  javaVersions {
+    target(8)
   }
+  github("jpenilla", "ModsCommand")
   apache2License()
 }
 
 license {
-  header = file("LICENSE_HEADER")
+  header(file("LICENSE_HEADER"))
 }

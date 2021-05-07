@@ -24,7 +24,7 @@
   },
   "mixins": [
   ],
-  "license": ["Apache v2.0"],
+  "license": ["Apache-2.0"],
   "depends": {
     "fabric": ">=0.30.0",
     "fabricloader": ">=0.7.4",
