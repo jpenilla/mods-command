@@ -22,13 +22,13 @@ repositories {
   maven("https://repo.jpenilla.xyz/snapshots/")
 }
 
-val minecraftVersion = "21w15a"
+val minecraftVersion = "21w18a"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(minecraft.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.11.1")
-  //modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.32.7+1.17")
+  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.34.2+1.17")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0-SNAPSHOT"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0-SNAPSHOT"))
