@@ -69,7 +69,7 @@ import static xyz.jpenilla.modscommand.Mods.mods;
 
 final class ModsCommand implements RegistrableCommand {
   private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = SimpleCloudKey.of("mod_id", TypeToken.get(ModDescription.class));
-  private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page", TypeToken.get(Integer.class));
+  private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page_number", TypeToken.get(Integer.class));
   private static final CloudKey<String> QUERY_ARGUMENT_KEY = SimpleCloudKey.of("query", TypeToken.get(String.class));
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?"); // copied from adventure-text-serializer-legacy
   private static final Component GRAY_SEPARATOR = text(':', GRAY);
@@ -100,13 +100,13 @@ final class ModsCommand implements RegistrableCommand {
         .argument(pageArgument())
         .handler(this::executeListMods)
     );
-    final Command.Builder<Commander> mod = mods.literal("mod")
+    final Command.Builder<Commander> info = mods.literal("info")
       .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()));
     manager.command(
-      mod.handler(this::executeModInfo)
+      info.handler(this::executeModInfo)
     );
     manager.command(
-      mod.literal("children")
+      info.literal("children")
         .argument(pageArgument())
         .handler(this::executeListChildren)
     );
@@ -157,7 +157,7 @@ final class ModsCommand implements RegistrableCommand {
         .color(MUSTARD)
         .append(coloredBoldModName(mod))
         .append(text(" child mods")))
-      .footer(this.footerRenderer(p -> String.format("/%s mod %s children %s", this.label, mod.modId(), p)))
+      .footer(this.footerRenderer(p -> String.format("/%s info %s children %s", this.label, mod.modId(), p)))
       .pageOutOfRange(ModsCommand::pageOutOfRange)
       .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
       .build();
@@ -366,7 +366,7 @@ final class ModsCommand implements RegistrableCommand {
               .append(coloredBoldModName(mod))
               .append(text("'s child mods."))
               .build())
-            .clickEvent(runCommand(String.format("/%s mod %s children", this.label, mod.modId())))
+            .clickEvent(runCommand(String.format("/%s info %s children", this.label, mod.modId())))
         );
       }
     }
