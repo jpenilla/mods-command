@@ -1,6 +1,6 @@
 plugins {
   id("fabric-loom") version "0.7-SNAPSHOT"
-  val indraVersion = "2.0.2"
+  val indraVersion = "2.0.3"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
