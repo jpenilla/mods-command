@@ -1,11 +1,10 @@
 plugins {
-  id("fabric-loom") version "0.7-SNAPSHOT"
-  val indraVersion = "2.0.3"
+  `java-library`
+  val indraVersion = "2.0.5"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  `maven-publish`
-  `java-library`
+  id("fabric-loom") version "0.8-SNAPSHOT"
 }
 
 version = "1.0.2-SNAPSHOT"
@@ -39,7 +38,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.0.0"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.11.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.13.0")
 }
 
 tasks {
@@ -51,9 +50,6 @@ tasks {
         "description" to project.description
       )
     }
-  }
-  withType<JavaCompile> {
-    options.encoding = Charsets.UTF_8.toString()
   }
   jar {
     from("LICENSE") {
@@ -68,6 +64,7 @@ tasks {
 indra {
   javaVersions {
     target(8)
+    minimumToolchain(16)
   }
   github("jpenilla", "ModsCommand")
   apache2License()

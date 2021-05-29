@@ -48,7 +48,7 @@ public final class ModsCommandModInitializer implements ModInitializer {
     this.loadConfig();
 
     final Mods mods = mods(); // Initialize so it can't fail later
-    LOGGER.info("Mods Command detected " + mods.allMods().count() + " loaded mods."); // We identify ourselves in log messages due to Vanilla MC's terrible Log4j config.
+    LOGGER.info("Mods Command detected {} loaded mods.", mods.allMods().count()); // We identify ourselves in log messages due to Vanilla MC's terrible Log4j config.
 
     final FabricServerCommandManager<Commander> manager = new FabricServerCommandManager<>(
       CommandExecutionCoordinator.simpleCoordinator(),
