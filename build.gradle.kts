@@ -69,8 +69,7 @@ tasks {
 
 indra {
   javaVersions {
-    target(8)
-    minimumToolchain(16)
+    target(16)
   }
   github("jpenilla", "ModsCommand")
   apache2License()
