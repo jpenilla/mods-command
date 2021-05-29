@@ -2,12 +2,14 @@ plugins {
   `java-library`
   val indraVersion = "2.0.5"
   id("net.kyori.indra") version indraVersion
+  id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
   id("fabric-loom") version "0.8-SNAPSHOT"
 }
 
 version = "1.0.3-SNAPSHOT"
+  .run { if (this.endsWith("-SNAPSHOT")) "$this+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}" else this }
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
 val githubUrl = "https://github.com/jpenilla/ModsCommand"
