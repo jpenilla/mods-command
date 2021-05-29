@@ -7,7 +7,7 @@ plugins {
   id("fabric-loom") version "0.8-SNAPSHOT"
 }
 
-version = "1.0.2-SNAPSHOT"
+version = "1.0.2"
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
 val githubUrl = "https://github.com/jpenilla/ModsCommand"
