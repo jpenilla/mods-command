@@ -450,6 +450,6 @@ final class ModsCommand implements RegistrableCommand {
   }
 
   private @NonNull ClickEvent modInfo(final @NonNull ModDescription description) {
-    return runCommand(String.format("/%s mod %s", this.label, description.modId()));
+    return runCommand(String.format("/%s info %s", this.label, description.modId()));
   }
 }
