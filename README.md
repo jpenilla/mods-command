@@ -1,6 +1,6 @@
 # Mods Command
 
-![version badge](https://img.shields.io/github/v/release/jpenilla/ModsCommand?label=version)
+[![build](https://img.shields.io/github/checks-status/jpenilla/ModsCommand/master?label=build)](https://github.com/jpenilla/ModsCommand/actions) [![license](https://img.shields.io/badge/license-Apache--2.0-blue)](LICENSE) [![latest release](https://img.shields.io/github/v/release/jpenilla/ModsCommand)](https://github.com/jpenilla/ModsCommand/releases)
 
 A Fabric mod adding commands to list, search, and get information about installed mods.
 Requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api).
