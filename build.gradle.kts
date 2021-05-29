@@ -16,24 +16,24 @@ val githubUrl = "https://github.com/jpenilla/ModsCommand"
 
 repositories {
   mavenCentral()
-  maven("https://maven.fabricmc.net/")
   maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  maven("https://maven.fabricmc.net/")
   maven("https://repo.incendo.org/content/repositories/snapshots")
   maven("https://repo.jpenilla.xyz/snapshots/")
 }
 
-val minecraftVersion = "21w18a"
+val minecraftVersion = "1.17-pre1"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(minecraft.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.11.1")
-  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.34.2+1.17")
+  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.34.8+1.17")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0-SNAPSHOT"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0-SNAPSHOT"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "4.0.0+1.17-SNAPSHOT") {
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "4.1.0-SNAPSHOT") {
     exclude("ca.stellardrift", "colonel")
   })
 
