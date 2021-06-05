@@ -23,7 +23,6 @@ import cloud.commandframework.permission.CommandPermission;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import net.fabricmc.loader.api.FabricLoader;
@@ -70,7 +69,7 @@ final class DumpModsCommand implements RegistrableCommand {
     final String dump;
     try {
       dump = createDump();
-      this.writeDump(dump);
+      Files.writeString(this.dumpFile, dump);
     } catch (final IOException ex) {
       throw new RuntimeException("Failed to create mod list dump.", ex);
     }
@@ -91,10 +90,6 @@ final class DumpModsCommand implements RegistrableCommand {
       .clickEvent(copyToClipboard(dump))
       .hoverEvent(text("Click to copy to clipboard!", EMERALD));
     ctx.getSender().sendMessage(copyMessage);
-  }
-
-  private void writeDump(final @NonNull String dump) throws IOException {
-    Files.write(this.dumpFile, dump.getBytes(StandardCharsets.UTF_8));
   }
 
   private static @NonNull String createDump() throws ConfigurateException {

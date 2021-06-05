@@ -34,7 +34,6 @@ import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import static java.util.stream.Collectors.toList;
 import static net.kyori.adventure.text.Component.text;
 import static xyz.jpenilla.modscommand.Colors.EMERALD;
 
@@ -290,14 +289,14 @@ interface ModDescription extends Examinable {
     public @NonNull Collection<@NonNull String> authors() {
       return this.metadata.getAuthors().stream()
         .map(Person::getName)
-        .collect(toList());
+        .toList();
     }
 
     @Override
     public @NonNull Collection<@NonNull String> contributors() {
       return this.metadata.getContributors().stream()
         .map(Person::getName)
-        .collect(toList());
+        .toList();
     }
 
     @Override

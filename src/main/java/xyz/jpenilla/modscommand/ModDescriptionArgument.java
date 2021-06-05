@@ -27,10 +27,11 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.function.BiFunction;
-import java.util.stream.Collectors;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import static cloud.commandframework.arguments.parser.ArgumentParseResult.failure;
+import static cloud.commandframework.arguments.parser.ArgumentParseResult.success;
 import static xyz.jpenilla.modscommand.Mods.mods;
 
 final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
@@ -77,19 +78,18 @@ final class ModDescriptionArgument extends CommandArgument<Commander, ModDescrip
       final ModDescription meta = mods().findMod(Objects.requireNonNull(inputQueue.peek(), "inputQueue.peek() returned null"));
       if (meta != null) {
         inputQueue.remove();
-        return ArgumentParseResult.success(meta);
+        return success(meta);
       }
-      return ArgumentParseResult.failure(new IllegalArgumentException(String.format(
-        "No mod with id '%s'.",
-        inputQueue.peek()
-      )));
+      return failure(new IllegalArgumentException(
+        String.format("No mod with id '%s'.", inputQueue.peek())
+      ));
     }
 
     @Override
     public @NonNull List<@NonNull String> suggestions(final @NonNull CommandContext<Commander> commandContext, final @NonNull String input) {
       return mods().allMods()
         .map(ModDescription::modId)
-        .collect(Collectors.toList());
+        .toList();
     }
   }
 

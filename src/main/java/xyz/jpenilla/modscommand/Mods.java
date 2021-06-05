@@ -34,7 +34,6 @@ import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
 
 final class Mods {
@@ -90,7 +89,7 @@ final class Mods {
     if (fapi != null) {
       final List<ModDescription> fapiModules = descriptions.values().stream()
         .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(FABRIC_API_MODULE_MARKER))
-        .collect(toList());
+        .toList();
       fapiModules.forEach(module -> {
         descriptions.remove(module.modId());
         ((ModDescription.AbstractModDescription) fapi).addChild(module);
@@ -99,7 +98,7 @@ final class Mods {
 
     final List<ModDescription> loomGeneratedMods = descriptions.values().stream()
       .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(LOOM_GENERATED_MARKER))
-      .collect(toList());
+      .toList();
     loomGeneratedMods.forEach(module -> descriptions.remove(module.modId()));
     if (!loomGeneratedMods.isEmpty()) {
       descriptions.put(

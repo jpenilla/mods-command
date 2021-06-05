@@ -44,7 +44,6 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Comparator.comparing;
-import static java.util.stream.Collectors.toList;
 import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.newline;
 import static net.kyori.adventure.text.Component.space;
@@ -185,7 +184,7 @@ final class ModsCommand implements RegistrableCommand {
       .flatMap(match -> Stream.concat(match.parentStream(), match.selfAndChildren()))
       .distinct()
       .sorted(comparing(ModDescription::modId))
-      .collect(toList());
+      .toList();
     if (results.isEmpty()) {
       ctx.getSender().sendMessage(
         text()
