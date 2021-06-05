@@ -19,10 +19,9 @@ package xyz.jpenilla.modscommand;
 import cloud.commandframework.CommandManager;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.fabric.FabricClientCommandManager;
+import java.util.function.Function;
 import net.fabricmc.api.ClientModInitializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
-
-import java.util.function.Function;
 
 public final class ModsCommandClientModInitializer implements ClientModInitializer {
   @Override

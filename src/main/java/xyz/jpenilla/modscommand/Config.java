@@ -16,12 +16,11 @@
  */
 package xyz.jpenilla.modscommand;
 
+import java.util.HashSet;
+import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
-
-import java.util.HashSet;
-import java.util.Set;
 
 @ConfigSerializable
 public final class Config {

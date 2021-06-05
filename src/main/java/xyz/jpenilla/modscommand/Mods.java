@@ -17,12 +17,6 @@
 package xyz.jpenilla.modscommand;
 
 import com.google.common.collect.ImmutableMap;
-import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
-
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -31,6 +25,11 @@ import java.util.Set;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collector;
 import java.util.stream.Stream;
+import net.fabricmc.loader.api.FabricLoader;
+import net.fabricmc.loader.api.ModContainer;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.checker.nullness.qual.Nullable;
+import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
