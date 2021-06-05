@@ -63,7 +63,8 @@ interface Pagination<T> {
     final int start = itemsPerPage * (page - 1);
     final int maxIndex = start + itemsPerPage;
 
-    if (content instanceof RandomAccess && content instanceof final List<T> contentList) {
+    if (content instanceof RandomAccess && content instanceof List) {
+      final List<T> contentList = (List<T>) content;
       for (int i = start; i < maxIndex; i++) {
         if (i > content.size() - 1) {
           break;
