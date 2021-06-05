@@ -19,7 +19,6 @@ repositories {
   maven("https://oss.sonatype.org/content/repositories/snapshots/")
   maven("https://maven.fabricmc.net/")
   maven("https://repo.incendo.org/content/repositories/snapshots")
-  maven("https://repo.jpenilla.xyz/snapshots/")
 }
 
 val minecraftVersion = "1.17-rc1"
