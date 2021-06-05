@@ -22,7 +22,7 @@ repositories {
   maven("https://repo.jpenilla.xyz/snapshots/")
 }
 
-val minecraftVersion = "1.17-pre1"
+val minecraftVersion = "1.17-rc1"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
