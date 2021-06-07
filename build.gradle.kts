@@ -36,8 +36,8 @@ dependencies {
     exclude("ca.stellardrift", "colonel")
   })
 
-  modImplementation(include("ca.stellardrift", "confabricate", "2.0.3"))
-  implementation(include("org.spongepowered", "configurate-yaml", "4.0.0"))
+  modImplementation(include("ca.stellardrift", "confabricate", "2.1.0"))
+  implementation(include("org.spongepowered", "configurate-yaml", "4.1.1"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
   compileOnly("org.checkerframework", "checker-qual", "3.13.0")
@@ -60,6 +60,9 @@ tasks {
   }
   remapJar {
     archiveFileName.set("${project.name}-mc$minecraftVersion-${project.version}.jar")
+  }
+  withType<JavaCompile> {
+    options.compilerArgs.add("-Xlint:-processing")
   }
 }
 
