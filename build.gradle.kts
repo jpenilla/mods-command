@@ -1,6 +1,6 @@
 plugins {
   `java-library`
-  val indraVersion = "2.0.5"
+  val indraVersion = "2.0.6"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
