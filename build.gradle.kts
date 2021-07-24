@@ -21,16 +21,16 @@ repositories {
   maven("https://repo.incendo.org/content/repositories/snapshots")
 }
 
-val minecraftVersion = "1.17"
+val minecraftVersion = "1.17.1"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(minecraft.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.11.3")
-  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.34.9+1.17")
+  modImplementation("net.fabricmc", "fabric-loader", "0.11.6")
+  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.37.0+1.17")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0-SNAPSHOT"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0-SNAPSHOT"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0"))
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "4.1.0-SNAPSHOT") {
     exclude("ca.stellardrift", "colonel")
