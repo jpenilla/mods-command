@@ -163,7 +163,7 @@ final class ModsCommand implements RegistrableCommand {
   }
 
   private void executeSearch(final @NonNull CommandContext<Commander> ctx) {
-    final String rawQuery = ctx.getOptional(QUERY_ARGUMENT_KEY).orElse("").toLowerCase(Locale.ROOT).trim();
+    final String rawQuery = ctx.getOptional(QUERY_ARGUMENT_KEY).orElse("").toLowerCase(Locale.ENGLISH).trim();
     final String[] split = rawQuery.split(" ");
     int page = 1;
     String tempQuery = rawQuery;
@@ -213,11 +213,11 @@ final class ModsCommand implements RegistrableCommand {
   }
 
   private static @NonNull Predicate<ModDescription> matchesQuery(final @NonNull String query) {
-    return mod -> mod.modId().toLowerCase(Locale.ROOT).contains(query)
-      || mod.name().toLowerCase(Locale.ROOT).contains(query)
+    return mod -> mod.modId().toLowerCase(Locale.ENGLISH).contains(query)
+      || mod.name().toLowerCase(Locale.ENGLISH).contains(query)
       || "clientsided client-sided client sided".contains(query) && mod.environment() == ModDescription.Environment.CLIENT
       || "serversided server-sided server sided".contains(query) && mod.environment() == ModDescription.Environment.SERVER
-      || mod.authors().stream().anyMatch(author -> author.toLowerCase(Locale.ROOT).contains(query));
+      || mod.authors().stream().anyMatch(author -> author.toLowerCase(Locale.ENGLISH).contains(query));
   }
 
   private @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> footerRenderer(final @NonNull IntFunction<String> commandFunction) {

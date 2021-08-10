@@ -32,6 +32,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
+import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import static net.kyori.adventure.text.Component.text;
@@ -97,6 +98,7 @@ final class DumpModsCommand implements RegistrableCommand {
     final BufferedWriter bufferedWriter = new BufferedWriter(stringWriter);
     final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
       .sink(() -> bufferedWriter)
+      .nodeStyle(NodeStyle.BLOCK)
       .build();
     final ConfigurationNode root = loader.createNode();
 

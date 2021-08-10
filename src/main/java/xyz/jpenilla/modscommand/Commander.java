@@ -19,8 +19,8 @@ package xyz.jpenilla.modscommand;
 import net.fabricmc.fabric.api.client.command.v1.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
-import net.kyori.adventure.platform.fabric.AdventureCommandSourceStack;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.commands.CommandSourceStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 
@@ -44,9 +44,11 @@ interface Commander extends ForwardingAudience.Single {
 
   final class ServerCommander implements Commander {
     private final CommandSourceStack source;
+    private final Audience audience;
 
     ServerCommander(final @NonNull CommandSourceStack source) {
       this.source = source;
+      this.audience = FabricServerAudiences.of(this.source.getServer()).audience(this.source);
     }
 
     public @NonNull CommandSourceStack source() {
@@ -55,7 +57,7 @@ interface Commander extends ForwardingAudience.Single {
 
     @Override
     public @NonNull Audience audience() {
-      return (AdventureCommandSourceStack) this.source;
+      return this.audience;
     }
   }
 }
