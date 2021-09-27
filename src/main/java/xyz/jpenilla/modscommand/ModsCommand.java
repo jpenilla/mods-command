@@ -42,6 +42,7 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import xyz.jpenilla.modscommand.util.Components;
 
 import static java.util.Comparator.comparing;
 import static net.kyori.adventure.text.Component.empty;
@@ -125,13 +126,13 @@ final class ModsCommand implements RegistrableCommand {
   private void executeListMods(final @NonNull CommandContext<Commander> ctx) {
     final int page = ctx.getOptional(PAGE_ARGUMENT_KEY).orElse(1);
     final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
-      .header((currentPage, pages) -> TextComponent.ofChildren(
+      .header((currentPage, pages) -> Components.ofChildren(
         text("Loaded Mods", PURPLE, BOLD),
         text(String.format(" (%s total, %s top-level)", mods().allMods().count(), mods().topLevelMods().size()), GRAY, ITALIC)
       ))
       .footer(this.footerRenderer(p -> String.format("/%s page %d", this.label, p)))
       .pageOutOfRange(ModsCommand::pageOutOfRange)
-      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .item((item, lastOfPage) -> Components.ofChildren(DASH, this.shortModDescription(item)))
       .build();
     pagination.render(mods().topLevelMods(), page, 8).forEach(ctx.getSender()::sendMessage);
   }
@@ -157,7 +158,7 @@ final class ModsCommand implements RegistrableCommand {
         .append(text(" child mods")))
       .footer(this.footerRenderer(p -> String.format("/%s info %s children %s", this.label, mod.modId(), p)))
       .pageOutOfRange(ModsCommand::pageOutOfRange)
-      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .item((item, lastOfPage) -> Components.ofChildren(DASH, this.shortModDescription(item)))
       .build();
     pagination.render(mod.children(), page, 8).forEach(ctx.getSender()::sendMessage);
   }
@@ -196,7 +197,7 @@ final class ModsCommand implements RegistrableCommand {
       return;
     }
     final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
-      .header((currentPage, pages) -> TextComponent.ofChildren(
+      .header((currentPage, pages) -> Components.ofChildren(
         text()
           .decorate(BOLD)
           .append(text(results.size(), PINK))
@@ -207,7 +208,7 @@ final class ModsCommand implements RegistrableCommand {
       ))
       .footer(this.footerRenderer(p -> String.format("/%s search %s %d", this.label, query, p)))
       .pageOutOfRange(ModsCommand::pageOutOfRange)
-      .item((item, lastOfPage) -> TextComponent.ofChildren(DASH, this.shortModDescription(item)))
+      .item((item, lastOfPage) -> Components.ofChildren(DASH, this.shortModDescription(item)))
       .build();
     pagination.render(results, page, 8).forEach(ctx.getSender()::sendMessage);
   }

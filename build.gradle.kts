@@ -40,7 +40,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.1"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.14.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.18.0")
 }
 
 tasks {
