@@ -5,7 +5,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "0.8-SNAPSHOT"
+  id("quiet-fabric-loom") version "0.10-SNAPSHOT"
 }
 
 version = "1.0.5-SNAPSHOT"
@@ -25,7 +25,7 @@ val minecraftVersion = "1.17.1"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
-  mappings(minecraft.officialMojangMappings())
+  mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.11.6")
   modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.37.0+1.17")
 
