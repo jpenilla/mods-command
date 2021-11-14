@@ -26,7 +26,7 @@ val minecraftVersion = "1.17.1"
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.11.6")
+  modImplementation("net.fabricmc", "fabric-loader", "0.12.5")
   modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.37.0+1.17")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0"))
@@ -40,7 +40,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.1"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.18.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.19.0")
 }
 
 tasks {
