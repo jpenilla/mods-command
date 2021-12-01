@@ -21,23 +21,23 @@ repositories {
   maven("https://repo.incendo.org/content/repositories/snapshots")
 }
 
-val minecraftVersion = "1.17.1"
+val minecraftVersion = "1.18"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.12.5")
-  modImplementation("net.fabricmc.fabric-api", "fabric-api", "0.37.0+1.17")
+  modImplementation("net.fabricmc", "fabric-loader", "0.12.8")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.43.0+1.18")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.5.0"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.5.0"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0-SNAPSHOT"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0-SNAPSHOT"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "4.1.0-SNAPSHOT") {
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.0.0") {
     exclude("ca.stellardrift", "colonel")
   })
 
   modImplementation(include("ca.stellardrift", "confabricate", "2.1.0"))
-  implementation(include("org.spongepowered", "configurate-yaml", "4.1.1"))
+  implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
   compileOnly("org.checkerframework", "checker-qual", "3.19.0")
@@ -68,7 +68,7 @@ tasks {
 
 indra {
   javaVersions {
-    target(16)
+    target(17)
   }
   github("jpenilla", "ModsCommand")
   apache2License()
