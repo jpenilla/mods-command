@@ -27,7 +27,7 @@ dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.12.8")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.43.0+1.18")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.43.1+1.18")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0-SNAPSHOT"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0-SNAPSHOT"))
