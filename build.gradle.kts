@@ -29,8 +29,8 @@ dependencies {
   modImplementation("net.fabricmc", "fabric-loader", "0.12.8")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.43.1+1.18")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0-SNAPSHOT"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0-SNAPSHOT"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0"))
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "5.0.0") {
     exclude("ca.stellardrift", "colonel")
