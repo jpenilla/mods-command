@@ -24,10 +24,13 @@
   },
   "mixins": [
   ],
-  "license": ["Apache-2.0"],
+  "license": [
+    "Apache-2.0"
+  ],
   "depends": {
-    "fabric": ">=0.30.0",
+    "fabric": "*",
     "fabricloader": ">=0.12.8",
-    "minecraft": ">=1.18"
+    "minecraft": "1.18.x",
+    "cloud": "*"
   }
 }

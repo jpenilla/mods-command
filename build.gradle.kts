@@ -16,18 +16,25 @@ val githubUrl = "https://github.com/jpenilla/ModsCommand"
 
 repositories {
   mavenCentral()
-  maven("https://oss.sonatype.org/content/repositories/snapshots/")
+  maven("https://oss.sonatype.org/content/repositories/snapshots/") {
+    mavenContent { snapshotsOnly() }
+  }
   maven("https://maven.fabricmc.net/")
-  maven("https://repo.incendo.org/content/repositories/snapshots")
+  maven("https://repo.incendo.org/content/repositories/snapshots/") {
+    mavenContent {
+      snapshotsOnly()
+      includeGroup("cloud.commandframework")
+    }
+  }
 }
 
-val minecraftVersion = "1.18"
+val minecraftVersion = "1.18.1"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.12.8")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.43.1+1.18")
+  modImplementation("net.fabricmc", "fabric-loader", "0.12.12")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.44.0+1.18")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0"))
@@ -40,7 +47,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.19.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.20.0")
 }
 
 tasks {
