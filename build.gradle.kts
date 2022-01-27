@@ -5,7 +5,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "0.10-SNAPSHOT"
+  id("quiet-fabric-loom") version "0.11-SNAPSHOT"
 }
 
 version = "1.0.6-SNAPSHOT"
@@ -34,10 +34,10 @@ dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.12.12")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.44.0+1.18")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+1.18")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.0"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.0"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.1"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.1"))
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "5.0.0") {
     exclude("ca.stellardrift", "colonel")
@@ -47,7 +47,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.20.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.21.1")
 }
 
 tasks {
