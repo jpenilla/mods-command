@@ -7,7 +7,7 @@ plugins {
   id("quiet-fabric-loom") version "0.11-SNAPSHOT"
 }
 
-version = "1.0.6"
+version = "1.0.7-SNAPSHOT"
   .run { if (endsWith("-SNAPSHOT")) "$this+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}" else this }
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
