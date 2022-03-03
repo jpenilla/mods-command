@@ -1,6 +1,5 @@
 plugins {
-  `java-library`
-  val indraVersion = "2.0.6"
+  val indraVersion = "2.1.1"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
@@ -28,26 +27,26 @@ repositories {
   }
 }
 
-val minecraftVersion = "1.18.1"
+val minecraftVersion = "1.18.2"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.12.12")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.45.0+1.18")
+  modImplementation("net.fabricmc", "fabric-loader", "0.13.3")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.47.8+1.18.2")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.1"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.1"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.2"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.2"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.0.0") {
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.2.0") {
     exclude("ca.stellardrift", "colonel")
   })
 
-  modImplementation(include("ca.stellardrift", "confabricate", "2.1.0"))
+  modImplementation(include("ca.stellardrift", "confabricate", "3.0.0-SNAPSHOT"))
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.21.1")
+  compileOnly("org.checkerframework", "checker-qual", "3.21.3")
 }
 
 tasks {
