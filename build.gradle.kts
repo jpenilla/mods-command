@@ -4,7 +4,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "0.11-SNAPSHOT"
+  id("quiet-fabric-loom") version "0.12-SNAPSHOT"
 }
 
 version = "1.0.8-SNAPSHOT"
