@@ -41,9 +41,7 @@ dependencies {
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.7.0"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.7.0"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.4.0-SNAPSHOT") {
-    exclude("ca.stellardrift", "colonel")
-  })
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.4.0-SNAPSHOT"))
 
   modImplementation(include("ca.stellardrift", "confabricate", "3.0.0-SNAPSHOT"))
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
