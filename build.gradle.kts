@@ -15,6 +15,9 @@ val githubUrl = "https://github.com/jpenilla/ModsCommand"
 
 repositories {
   mavenCentral()
+  maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
+    mavenContent { snapshotsOnly() }
+  }
   maven("https://oss.sonatype.org/content/repositories/snapshots/") {
     mavenContent { snapshotsOnly() }
   }
@@ -27,18 +30,18 @@ repositories {
   }
 }
 
-val minecraftVersion = "1.18.2"
+val minecraftVersion = "1.19"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.14.4")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.51.0+1.18.2")
+  modImplementation("net.fabricmc", "fabric-loader", "0.14.8")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.56.0+1.19")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.6.2"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.6.2"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.7.0"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.7.0"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.2.1") {
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.4.0-SNAPSHOT") {
     exclude("ca.stellardrift", "colonel")
   })
 
@@ -46,7 +49,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.22.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.22.2")
 }
 
 tasks {

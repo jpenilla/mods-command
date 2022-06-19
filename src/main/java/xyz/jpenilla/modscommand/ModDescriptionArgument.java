@@ -54,7 +54,7 @@ final class ModDescriptionArgument extends CommandArgument<Commander, ModDescrip
   }
 
   public static void registerParser(final @NonNull CommandManager<Commander> manager) {
-    manager.getParserRegistry().registerParserSupplier(
+    manager.parserRegistry().registerParserSupplier(
       TypeToken.get(ModDescription.class),
       parserParameters -> new Parser()
     );
