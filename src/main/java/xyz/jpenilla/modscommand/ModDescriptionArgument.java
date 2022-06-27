@@ -29,18 +29,20 @@ import java.util.Queue;
 import java.util.function.BiFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import static cloud.commandframework.arguments.parser.ArgumentParseResult.failure;
 import static cloud.commandframework.arguments.parser.ArgumentParseResult.success;
 import static xyz.jpenilla.modscommand.Mods.mods;
 
+@DefaultQualifier(NonNull.class)
 final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
   private ModDescriptionArgument(
     final boolean required,
-    final @NonNull String name,
-    final @NonNull String defaultValue,
+    final String name,
+    final String defaultValue,
     final @Nullable BiFunction<CommandContext<Commander>, String, List<String>> suggestionsProvider,
-    final @NonNull ArgumentDescription defaultDescription
+    final ArgumentDescription defaultDescription
   ) {
     super(
       required,
@@ -53,29 +55,31 @@ final class ModDescriptionArgument extends CommandArgument<Commander, ModDescrip
     );
   }
 
-  public static void registerParser(final @NonNull CommandManager<Commander> manager) {
+  public static void registerParser(final CommandManager<Commander> manager) {
     manager.parserRegistry().registerParserSupplier(
       TypeToken.get(ModDescription.class),
       parserParameters -> new Parser()
     );
   }
 
-  public static @NonNull CommandArgument<Commander, ModDescription> of(final @NonNull String name) {
+  public static CommandArgument<Commander, ModDescription> of(final String name) {
     return builder(name).build();
   }
 
-  public static @NonNull CommandArgument<Commander, ModDescription> optional(final @NonNull String name) {
+  public static CommandArgument<Commander, ModDescription> optional(final String name) {
     return builder(name).asOptional().build();
   }
 
-  public static @NonNull Builder builder(final @NonNull String name) {
+  public static Builder builder(final String name) {
     return new Builder(name);
   }
 
   public static final class Parser implements ArgumentParser<Commander, ModDescription> {
     @Override
-    public @NonNull ArgumentParseResult<@NonNull ModDescription> parse(final @NonNull CommandContext<Commander> commandContext, final @NonNull Queue<@NonNull String> inputQueue) {
-      final ModDescription meta = mods().findMod(Objects.requireNonNull(inputQueue.peek(), "inputQueue.peek() returned null"));
+    public ArgumentParseResult<ModDescription> parse(final CommandContext<Commander> commandContext, final Queue<String> inputQueue) {
+      final @Nullable ModDescription meta = mods().findMod(
+        Objects.requireNonNull(inputQueue.peek(), "inputQueue.peek() returned null")
+      );
       if (meta != null) {
         inputQueue.remove();
         return success(meta);
@@ -86,7 +90,7 @@ final class ModDescriptionArgument extends CommandArgument<Commander, ModDescrip
     }
 
     @Override
-    public @NonNull List<@NonNull String> suggestions(final @NonNull CommandContext<Commander> commandContext, final @NonNull String input) {
+    public List<String> suggestions(final CommandContext<Commander> commandContext, final String input) {
       return mods().allMods()
         .map(ModDescription::modId)
         .toList();
@@ -94,12 +98,12 @@ final class ModDescriptionArgument extends CommandArgument<Commander, ModDescrip
   }
 
   public static final class Builder extends TypedBuilder<Commander, ModDescription, Builder> {
-    private Builder(final @NonNull String name) {
+    private Builder(final String name) {
       super(ModDescription.class, name);
     }
 
     @Override
-    public @NonNull CommandArgument<Commander, ModDescription> build() {
+    public CommandArgument<Commander, ModDescription> build() {
       return new ModDescriptionArgument(
         this.isRequired(),
         this.getName(),

@@ -19,9 +19,11 @@ package xyz.jpenilla.modscommand;
 import cloud.commandframework.fabric.FabricCommandManager;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import static cloud.commandframework.minecraft.extras.AudienceProvider.nativeAudience;
 
+@DefaultQualifier(NonNull.class)
 final class Commands {
   private Commands() {
   }

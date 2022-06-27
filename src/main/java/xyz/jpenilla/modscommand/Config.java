@@ -19,10 +19,12 @@ package xyz.jpenilla.modscommand;
 import java.util.HashSet;
 import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Comment;
 
 @ConfigSerializable
+@DefaultQualifier(NonNull.class)
 public final class Config {
   private HiddenMods hiddenMods = new HiddenMods();
 

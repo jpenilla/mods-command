@@ -23,19 +23,22 @@ import cloud.commandframework.permission.Permission;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
+import org.spongepowered.configurate.reference.ConfigurationReference;
 import org.spongepowered.configurate.reference.ValueReference;
 
 import static xyz.jpenilla.modscommand.Mods.mods;
 
+@DefaultQualifier(NonNull.class)
 public final class ModsCommandModInitializer implements ModInitializer {
   private static @MonotonicNonNull ModsCommandModInitializer instance;
-  static final Logger LOGGER = LogManager.getLogger("Mods Command");
+  static final Logger LOGGER = LoggerFactory.getLogger("Mods Command");
   private @MonotonicNonNull ModContainer modContainer;
   private @MonotonicNonNull Config config;
 
@@ -48,7 +51,7 @@ public final class ModsCommandModInitializer implements ModInitializer {
     this.loadConfig();
 
     final Mods mods = mods(); // Initialize so it can't fail later
-    LOGGER.info("Mods Command detected {} loaded mods.", mods.allMods().count()); // We identify ourselves in log messages due to Vanilla MC's terrible Log4j config.
+    LOGGER.info("Mods Command detected {} loaded mods ({} top-level).", mods.modCount(), mods.topLevelMods().size()); // We identify ourselves in log messages due to Vanilla MC's terrible Log4j config.
 
     final FabricServerCommandManager<Commander> manager = new FabricServerCommandManager<>(
       CommandExecutionCoordinator.simpleCoordinator(),
@@ -65,8 +68,8 @@ public final class ModsCommandModInitializer implements ModInitializer {
   }
 
   private void loadConfig() {
-    try {
-      final ValueReference<Config, CommentedConfigurationNode> reference = Confabricate.configurationFor(this.modContainer, false).referenceTo(Config.class);
+    try (final ConfigurationReference<CommentedConfigurationNode> ref = Confabricate.configurationFor(this.modContainer, false)) {
+      final ValueReference<Config, CommentedConfigurationNode> reference = ref.referenceTo(Config.class);
       this.config = reference.get();
       reference.setAndSave(this.config);
     } catch (final ConfigurateException ex) {
@@ -74,14 +77,14 @@ public final class ModsCommandModInitializer implements ModInitializer {
     }
   }
 
-  public @NonNull Config config() {
+  public Config config() {
     if (this.config == null) {
       throw new IllegalStateException("Mods Command config not yet loaded!");
     }
     return this.config;
   }
 
-  public static @NonNull ModsCommandModInitializer instance() {
+  public static ModsCommandModInitializer instance() {
     if (instance == null) {
       throw new IllegalStateException("Mods Command has not yet been initialized!");
     }

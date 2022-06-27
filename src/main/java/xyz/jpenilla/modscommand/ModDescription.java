@@ -33,57 +33,61 @@ import net.kyori.examination.ExaminableProperty;
 import net.kyori.examination.string.StringExaminer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
+import static java.util.Comparator.comparing;
 import static net.kyori.adventure.text.Component.text;
 import static xyz.jpenilla.modscommand.Colors.EMERALD;
 
+@DefaultQualifier(NonNull.class)
 interface ModDescription extends Examinable {
   @Nullable ModDescription parent();
 
-  @NonNull List<@NonNull ModDescription> children();
+  List<ModDescription> children();
 
-  @NonNull String modId();
+  String modId();
 
-  @NonNull String name();
+  String name();
 
-  @NonNull String version();
+  String version();
 
-  @NonNull String type();
+  String type();
 
-  @NonNull String description();
+  String description();
 
-  @NonNull Collection<String> authors();
+  Collection<String> authors();
 
-  @NonNull Collection<String> contributors();
+  Collection<String> contributors();
 
-  @NonNull Collection<String> licenses();
+  Collection<String> licenses();
 
-  @NonNull Map<@NonNull String, @NonNull String> contact();
+  Map<String, String> contact();
 
-  @NonNull Environment environment();
+  Environment environment();
 
-  default @NonNull Stream<@NonNull ModDescription> parentStream() {
-    final ModDescription parent = this.parent();
+  default Stream<ModDescription> parentStream() {
+    final @Nullable ModDescription parent = this.parent();
     if (parent == null) {
       return Stream.empty();
     }
     return parent.selfAndParents();
   }
 
-  default @NonNull Stream<@NonNull ModDescription> selfAndParents() {
+  default Stream<ModDescription> selfAndParents() {
     return Stream.concat(Stream.of(this), this.parentStream());
   }
 
-  default @NonNull Stream<@NonNull ModDescription> childrenStream() {
+  default Stream<ModDescription> childrenStream() {
     return this.children().stream().flatMap(ModDescription::selfAndChildren);
   }
 
-  default @NonNull Stream<@NonNull ModDescription> selfAndChildren() {
+  default Stream<ModDescription> selfAndChildren() {
     return Stream.concat(Stream.of(this), this.childrenStream());
   }
 
-  default @NonNull Stream<@NonNull ExaminableProperty> examinableProperties() {
-    final ModDescription parent = this.parent();
+  @Override
+  default Stream<ExaminableProperty> examinableProperties() {
+    final @Nullable ModDescription parent = this.parent();
     return Stream.of(
       ExaminableProperty.of("modId", this.modId()),
       ExaminableProperty.of("name", this.name()),
@@ -113,31 +117,32 @@ interface ModDescription extends Examinable {
 
     private final Component display;
 
-    Environment(final @NonNull ComponentLike display) {
+    Environment(final ComponentLike display) {
       this.display = display.asComponent();
     }
 
-    public @NonNull Component display() {
+    public Component display() {
       return this.display;
     }
   }
 
   abstract class AbstractModDescription implements ModDescription {
     private final List<ModDescription> children = new ArrayList<>();
-    private ModDescription parent = null;
+    private @Nullable ModDescription parent = null;
 
-    protected AbstractModDescription(final @NonNull List<@NonNull ModDescription> children) {
+    protected AbstractModDescription(final List<ModDescription> children) {
       for (final ModDescription child : children) {
         this.addChild(child);
       }
     }
 
-    public void addChild(final @NonNull ModDescription newChild) {
+    public void addChild(final ModDescription newChild) {
       if (!(newChild instanceof AbstractModDescription)) {
-        throw new IllegalArgumentException(String.format("Cannot add non-AbstractModDescription as a child. Attempted to add %s '%s'.", newChild.getClass().getSimpleName(), newChild));
+        throw new IllegalArgumentException(String.format("Cannot add non-AbstractModDescription as a child. Attempted to add %s '%s'.", newChild.getClass().getName(), newChild));
       }
       ((AbstractModDescription) newChild).parent = this;
       this.children.add(newChild);
+      this.children.sort(comparing(ModDescription::modId));
     }
 
     @Override
@@ -146,7 +151,7 @@ interface ModDescription extends Examinable {
     }
 
     @Override
-    public @NonNull List<@NonNull ModDescription> children() {
+    public List<ModDescription> children() {
       return Collections.unmodifiableList(this.children);
     }
 
@@ -169,17 +174,17 @@ interface ModDescription extends Examinable {
     private final Environment environment;
 
     ModDescriptionImpl(
-      final @NonNull List<@NonNull ModDescription> children,
-      final @NonNull String modId,
-      final @NonNull String name,
-      final @NonNull String version,
-      final @NonNull String type,
-      final @NonNull String description,
-      final @NonNull Collection<@NonNull String> authors,
-      final @NonNull Collection<@NonNull String> contributors,
-      final @NonNull Collection<@NonNull String> licenses,
-      final @NonNull Map<@NonNull String, @NonNull String> contact,
-      final @NonNull Environment environment
+      final List<ModDescription> children,
+      final String modId,
+      final String name,
+      final String version,
+      final String type,
+      final String description,
+      final Collection<String> authors,
+      final Collection<String> contributors,
+      final Collection<String> licenses,
+      final Map<String, String> contact,
+      final Environment environment
     ) {
       super(children);
       this.modId = modId;
@@ -195,52 +200,52 @@ interface ModDescription extends Examinable {
     }
 
     @Override
-    public @NonNull String modId() {
+    public String modId() {
       return this.modId;
     }
 
     @Override
-    public @NonNull String name() {
+    public String name() {
       return this.name;
     }
 
     @Override
-    public @NonNull String version() {
+    public String version() {
       return this.version;
     }
 
     @Override
-    public @NonNull String type() {
+    public String type() {
       return this.type;
     }
 
     @Override
-    public @NonNull String description() {
+    public String description() {
       return this.description;
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> authors() {
+    public Collection<String> authors() {
       return this.authors;
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> contributors() {
+    public Collection<String> contributors() {
       return this.contributors;
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> licenses() {
+    public Collection<String> licenses() {
       return this.licenses;
     }
 
     @Override
-    public @NonNull Map<@NonNull String, @NonNull String> contact() {
+    public Map<String, String> contact() {
       return this.contact;
     }
 
     @Override
-    public @NonNull Environment environment() {
+    public Environment environment() {
       return this.environment;
     }
   }
@@ -249,77 +254,77 @@ interface ModDescription extends Examinable {
     private final ModMetadata metadata;
 
     WrappingModDescription(
-      final @NonNull ModMetadata metadata,
-      final @NonNull ModDescription @NonNull ... children
+      final ModMetadata metadata,
+      final ModDescription... children
     ) {
       super(Arrays.asList(children));
       this.metadata = metadata;
     }
 
-    public @NonNull ModMetadata wrapped() {
+    public ModMetadata wrapped() {
       return this.metadata;
     }
 
     @Override
-    public @NonNull String modId() {
+    public String modId() {
       return this.metadata.getId();
     }
 
     @Override
-    public @NonNull String name() {
+    public String name() {
       return this.metadata.getName();
     }
 
     @Override
-    public @NonNull String version() {
+    public String version() {
       return this.metadata.getVersion().getFriendlyString();
     }
 
     @Override
-    public @NonNull String type() {
+    public String type() {
       return this.metadata.getType();
     }
 
     @Override
-    public @NonNull String description() {
+    public String description() {
       return this.metadata.getDescription();
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> authors() {
+    public Collection<String> authors() {
       return this.metadata.getAuthors().stream()
         .map(Person::getName)
         .toList();
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> contributors() {
+    public Collection<String> contributors() {
       return this.metadata.getContributors().stream()
         .map(Person::getName)
         .toList();
     }
 
     @Override
-    public @NonNull Collection<@NonNull String> licenses() {
+    public Collection<String> licenses() {
       return this.metadata.getLicense();
     }
 
     @Override
-    public @NonNull Map<@NonNull String, @NonNull String> contact() {
+    public Map<String, String> contact() {
       return this.metadata.getContact().asMap();
     }
 
     @Override
-    public @NonNull Environment environment() {
+    public Environment environment() {
       return fromFabric(this.metadata.getEnvironment());
     }
 
     @Override
-    public @NonNull Stream<@NonNull ExaminableProperty> examinableProperties() {
+    public Stream<ExaminableProperty> examinableProperties() {
       return Stream.concat(super.examinableProperties(), Stream.of(ExaminableProperty.of("metadata", this.metadata)));
     }
 
-    private static @NonNull Environment fromFabric(final @NonNull ModEnvironment modEnvironment) {
+    private static Environment fromFabric(final ModEnvironment modEnvironment) {
       if (modEnvironment == ModEnvironment.CLIENT) {
         return Environment.CLIENT;
       } else if (modEnvironment == ModEnvironment.SERVER) {

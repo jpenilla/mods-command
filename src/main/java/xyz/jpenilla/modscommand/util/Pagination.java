@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -22,25 +22,27 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.RandomAccess;
-import java.util.function.BiFunction;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
+import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import static java.util.Objects.requireNonNull;
 import static net.kyori.adventure.text.Component.empty;
 
-interface Pagination<T> {
-  @NonNull ComponentLike header(int page, int pages);
+@DefaultQualifier(NonNull.class)
+public interface Pagination<T> {
+  ComponentLike header(int page, int pages);
 
-  @NonNull ComponentLike footer(int page, int pages);
+  ComponentLike footer(int page, int pages);
 
-  @NonNull ComponentLike pageOutOfRange(int page, int pages);
+  ComponentLike pageOutOfRange(int page, int pages);
 
-  @NonNull ComponentLike item(@NonNull T item, boolean lastOfPage);
+  ComponentLike item(T item, boolean lastOfPage);
 
-  default @NonNull List<@NonNull Component> render(
-    final @NonNull Collection<@NonNull T> content,
+  default List<Component> render(
+    final Collection<T> content,
     final int page,
     final int itemsPerPage
   ) {
@@ -63,8 +65,7 @@ interface Pagination<T> {
     final int start = itemsPerPage * (page - 1);
     final int maxIndex = start + itemsPerPage;
 
-    if (content instanceof RandomAccess && content instanceof List) {
-      final List<T> contentList = (List<T>) content;
+    if (content instanceof RandomAccess && content instanceof final List<T> contentList) {
       for (int i = start; i < maxIndex; i++) {
         if (i > content.size() - 1) {
           break;
@@ -89,40 +90,40 @@ interface Pagination<T> {
     return Collections.unmodifiableList(renderedContent);
   }
 
-  static <T> @NonNull Builder<T> builder() {
+  static <T> Builder<T> builder() {
     return new Builder<>();
   }
 
   final class Builder<T> {
-    private BiFunction<Integer, Integer, ComponentLike> headerRenderer = (currentPage, pages) -> empty();
-    private BiFunction<Integer, Integer, ComponentLike> footerRenderer = (currentPage, pages) -> empty();
-    private BiFunction<Integer, Integer, ComponentLike> pageOutOfRangeRenderer;
-    private BiFunction<T, Boolean, ComponentLike> itemRenderer;
+    private BiIntFunction<ComponentLike> headerRenderer = ($, $$) -> empty();
+    private BiIntFunction<ComponentLike> footerRenderer = ($, $$) -> empty();
+    private @MonotonicNonNull BiIntFunction<ComponentLike> pageOutOfRangeRenderer = null;
+    private @MonotonicNonNull ItemRenderer<T> itemRenderer = null;
 
     private Builder() {
     }
 
-    public @NonNull Builder<T> header(final @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> headerRenderer) {
+    public Builder<T> header(final BiIntFunction<ComponentLike> headerRenderer) {
       this.headerRenderer = headerRenderer;
       return this;
     }
 
-    public @NonNull Builder<T> footer(final @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> footerRenderer) {
+    public Builder<T> footer(final BiIntFunction<ComponentLike> footerRenderer) {
       this.footerRenderer = footerRenderer;
       return this;
     }
 
-    public @NonNull Builder<T> pageOutOfRange(final @NonNull BiFunction<@NonNull Integer, @NonNull Integer, @NonNull ComponentLike> pageOutOfRangeRenderer) {
+    public Builder<T> pageOutOfRange(final BiIntFunction<ComponentLike> pageOutOfRangeRenderer) {
       this.pageOutOfRangeRenderer = pageOutOfRangeRenderer;
       return this;
     }
 
-    public @NonNull Builder<T> item(final @NonNull BiFunction<@NonNull T, @NonNull Boolean, @NonNull ComponentLike> itemRenderer) {
+    public Builder<T> item(final ItemRenderer<T> itemRenderer) {
       this.itemRenderer = itemRenderer;
       return this;
     }
 
-    public @NonNull Pagination<T> build() {
+    public Pagination<T> build() {
       return new DelegatingPaginationImpl<>(
         requireNonNull(this.headerRenderer, "Must provide a header renderer!"),
         requireNonNull(this.footerRenderer, "Must provide a footer renderer!"),
@@ -131,42 +132,35 @@ interface Pagination<T> {
       );
     }
 
-    private static final class DelegatingPaginationImpl<T> implements Pagination<T> {
-      private final BiFunction<Integer, Integer, ComponentLike> headerRenderer;
-      private final BiFunction<Integer, Integer, ComponentLike> footerRenderer;
-      private final BiFunction<Integer, Integer, ComponentLike> pageOutOfRangeRenderer;
-      private final BiFunction<T, Boolean, ComponentLike> itemRenderer;
+    @FunctionalInterface
+    public interface ItemRenderer<T> {
+      ComponentLike render(T item, boolean lastOfPage);
+    }
 
-      DelegatingPaginationImpl(
-        final BiFunction<Integer, Integer, ComponentLike> headerRenderer,
-        final BiFunction<Integer, Integer, ComponentLike> footerRenderer,
-        final BiFunction<Integer, Integer, ComponentLike> pageOutOfRangeRenderer,
-        final BiFunction<T, Boolean, ComponentLike> itemRenderer
-      ) {
-        this.headerRenderer = headerRenderer;
-        this.footerRenderer = footerRenderer;
-        this.pageOutOfRangeRenderer = pageOutOfRangeRenderer;
-        this.itemRenderer = itemRenderer;
-      }
-
+    private record DelegatingPaginationImpl<T>(
+      BiIntFunction<ComponentLike> headerRenderer,
+      BiIntFunction<ComponentLike> footerRenderer,
+      BiIntFunction<ComponentLike> pageOutOfRangeRenderer,
+      ItemRenderer<T> itemRenderer
+    ) implements Pagination<T> {
       @Override
-      public @NonNull ComponentLike header(final int page, final int pages) {
+      public ComponentLike header(final int page, final int pages) {
         return this.headerRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike footer(final int page, final int pages) {
+      public ComponentLike footer(final int page, final int pages) {
         return this.footerRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike pageOutOfRange(final int page, final int pages) {
+      public ComponentLike pageOutOfRange(final int page, final int pages) {
         return this.pageOutOfRangeRenderer.apply(page, pages);
       }
 
       @Override
-      public @NonNull ComponentLike item(final @NonNull T item, final boolean lastOfPage) {
-        return this.itemRenderer.apply(item, lastOfPage);
+      public ComponentLike item(final T item, final boolean lastOfPage) {
+        return this.itemRenderer.render(item, lastOfPage);
       }
     }
   }

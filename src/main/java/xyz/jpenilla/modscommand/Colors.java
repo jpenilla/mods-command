@@ -17,9 +17,12 @@
 package xyz.jpenilla.modscommand;
 
 import net.kyori.adventure.text.format.TextColor;
+import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
 import static net.kyori.adventure.text.format.TextColor.color;
 
+@DefaultQualifier(NonNull.class)
 final class Colors {
   private Colors() {
   }

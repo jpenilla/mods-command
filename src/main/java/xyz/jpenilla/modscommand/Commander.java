@@ -20,44 +20,23 @@ import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
 import net.kyori.adventure.platform.fabric.FabricClientAudiences;
-import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.commands.CommandSourceStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
+@DefaultQualifier(NonNull.class)
 interface Commander extends ForwardingAudience.Single {
-  final class ClientCommander implements Commander {
-    private final FabricClientCommandSource source;
-
-    ClientCommander(final @NonNull FabricClientCommandSource source) {
-      this.source = source;
-    }
-
-    public @NonNull FabricClientCommandSource source() {
-      return this.source;
-    }
-
+  record ClientCommander(FabricClientCommandSource source) implements Commander {
     @Override
-    public @NonNull Audience audience() {
+    public Audience audience() {
       return FabricClientAudiences.of().audience();
     }
   }
 
-  final class ServerCommander implements Commander {
-    private final CommandSourceStack source;
-    private final Audience audience;
-
-    ServerCommander(final @NonNull CommandSourceStack source) {
-      this.source = source;
-      this.audience = FabricServerAudiences.of(this.source.getServer()).audience(this.source);
-    }
-
-    public @NonNull CommandSourceStack source() {
-      return this.source;
-    }
-
+  record ServerCommander(CommandSourceStack source) implements Commander {
     @Override
-    public @NonNull Audience audience() {
-      return this.audience;
+    public Audience audience() {
+      return this.source;
     }
   }
 }

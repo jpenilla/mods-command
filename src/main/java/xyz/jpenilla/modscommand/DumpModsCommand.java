@@ -29,6 +29,7 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
+import org.checkerframework.framework.qual.DefaultQualifier;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -42,13 +43,14 @@ import static xyz.jpenilla.modscommand.Colors.EMERALD;
 import static xyz.jpenilla.modscommand.Colors.PINK;
 import static xyz.jpenilla.modscommand.Mods.mods;
 
+@DefaultQualifier(NonNull.class)
 final class DumpModsCommand implements RegistrableCommand {
   private final String label;
-  private final CommandPermission permission;
+  private final @Nullable CommandPermission permission;
   private final Path dumpFile;
 
   DumpModsCommand(
-    final @NonNull String primaryAlias,
+    final String primaryAlias,
     final @Nullable CommandPermission permission
   ) {
     this.label = primaryAlias;
@@ -57,7 +59,7 @@ final class DumpModsCommand implements RegistrableCommand {
   }
 
   @Override
-  public void register(final @NonNull CommandManager<Commander> manager) {
+  public void register(final CommandManager<Commander> manager) {
     final Command.Builder<Commander> builder = manager.commandBuilder(this.label);
     if (this.permission == null) {
       manager.command(builder.handler(this::executeDumpModList));
@@ -66,7 +68,7 @@ final class DumpModsCommand implements RegistrableCommand {
     }
   }
 
-  private void executeDumpModList(final @NonNull CommandContext<Commander> ctx) {
+  private void executeDumpModList(final CommandContext<Commander> ctx) {
     final String dump;
     try {
       dump = createDump();
@@ -93,7 +95,7 @@ final class DumpModsCommand implements RegistrableCommand {
     ctx.getSender().sendMessage(copyMessage);
   }
 
-  private static @NonNull String createDump() throws ConfigurateException {
+  private static String createDump() throws ConfigurateException {
     final StringWriter stringWriter = new StringWriter();
     final BufferedWriter bufferedWriter = new BufferedWriter(stringWriter);
     final YamlConfigurationLoader loader = YamlConfigurationLoader.builder()
@@ -126,7 +128,7 @@ final class DumpModsCommand implements RegistrableCommand {
     return stringWriter.toString();
   }
 
-  private static void serializeModDescriptionToNode(final @NonNull ConfigurationNode node, final @NonNull ModDescription mod) throws SerializationException {
+  private static void serializeModDescriptionToNode(final ConfigurationNode node, final ModDescription mod) throws SerializationException {
     final ConfigurationNode modNode = node.appendListNode();
     modNode.node("mod-id").set(mod.modId());
     modNode.node("name").set(mod.name());

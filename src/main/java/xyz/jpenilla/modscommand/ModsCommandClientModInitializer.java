@@ -22,7 +22,9 @@ import cloud.commandframework.fabric.FabricClientCommandManager;
 import java.util.function.Function;
 import net.fabricmc.api.ClientModInitializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
+import org.checkerframework.framework.qual.DefaultQualifier;
 
+@DefaultQualifier(NonNull.class)
 public final class ModsCommandClientModInitializer implements ClientModInitializer {
   @Override
   public void onInitializeClient() {
@@ -37,7 +39,7 @@ public final class ModsCommandClientModInitializer implements ClientModInitializ
     this.registerCommand(manager, "dumpclientmods", label -> new DumpModsCommand(label, null));
   }
 
-  private void registerCommand(final @NonNull CommandManager<Commander> commandManager, final @NonNull String label, final @NonNull Function<String, RegistrableCommand> factory) {
+  private void registerCommand(final CommandManager<Commander> commandManager, final String label, final Function<String, RegistrableCommand> factory) {
     factory.apply(label).register(commandManager);
     factory.apply(String.format("modscommand:%s", label)).register(commandManager);
   }
