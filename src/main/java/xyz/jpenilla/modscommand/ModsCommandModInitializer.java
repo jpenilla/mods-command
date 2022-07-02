@@ -16,10 +16,12 @@
  */
 package xyz.jpenilla.modscommand;
 
-import ca.stellardrift.confabricate.Confabricate;
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.fabric.FabricServerCommandManager;
 import cloud.commandframework.permission.Permission;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -29,9 +31,7 @@ import org.checkerframework.framework.qual.DefaultQualifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.reference.ConfigurationReference;
-import org.spongepowered.configurate.reference.ValueReference;
+import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 
 import static xyz.jpenilla.modscommand.Mods.mods;
 
@@ -68,11 +68,19 @@ public final class ModsCommandModInitializer implements ModInitializer {
   }
 
   private void loadConfig() {
-    try (final ConfigurationReference<CommentedConfigurationNode> ref = Confabricate.configurationFor(this.modContainer, false)) {
-      final ValueReference<Config, CommentedConfigurationNode> reference = ref.referenceTo(Config.class);
-      this.config = reference.get();
-      reference.setAndSave(this.config);
-    } catch (final ConfigurateException ex) {
+    final Path configFile = FabricLoader.getInstance().getConfigDir()
+      .resolve(this.modContainer.getMetadata().getId() + ".conf");
+    final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
+      .path(configFile)
+      .build();
+    try {
+      if (!Files.exists(configFile.getParent())) {
+        Files.createDirectories(configFile.getParent());
+      }
+      final CommentedConfigurationNode load = loader.load();
+      this.config = load.get(Config.class);
+      loader.save(loader.createNode(node -> node.set(this.config)));
+    } catch (final IOException ex) {
       throw new RuntimeException("Failed to load config", ex);
     }
   }

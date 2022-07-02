@@ -36,15 +36,19 @@ dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.14.8")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.56.0+1.19")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.57.0+1.19")
 
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.7.0"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.7.0"))
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "5.4.0-SNAPSHOT"))
 
-  modImplementation(include("ca.stellardrift", "confabricate", "3.0.0-SNAPSHOT"))
-  implementation(include("org.spongepowered", "configurate-yaml", "4.1.2"))
+  val configurateVersion = "4.1.2"
+  implementation(include("org.spongepowered:configurate-core:$configurateVersion")!!)
+  implementation(include("io.leangen.geantyref:geantyref:1.3.13")!!)
+  implementation(include("org.spongepowered:configurate-hocon:$configurateVersion")!!)
+  implementation(include("com.typesafe:config:1.4.2")!!)
+  implementation(include("org.spongepowered:configurate-yaml:$configurateVersion")!!)
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
   compileOnly("org.checkerframework", "checker-qual", "3.22.2")
