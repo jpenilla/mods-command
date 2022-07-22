@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
@@ -35,21 +35,24 @@ import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
 import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import xyz.jpenilla.modscommand.command.Commander;
+import xyz.jpenilla.modscommand.command.RegistrableCommand;
+import xyz.jpenilla.modscommand.model.ModDescription;
 
 import static net.kyori.adventure.text.Component.text;
 import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
 import static net.kyori.adventure.text.event.ClickEvent.openFile;
-import static xyz.jpenilla.modscommand.Colors.EMERALD;
-import static xyz.jpenilla.modscommand.Colors.PINK;
-import static xyz.jpenilla.modscommand.Mods.mods;
+import static xyz.jpenilla.modscommand.model.Mods.mods;
+import static xyz.jpenilla.modscommand.util.Colors.EMERALD;
+import static xyz.jpenilla.modscommand.util.Colors.PINK;
 
 @DefaultQualifier(NonNull.class)
-final class DumpModsCommand implements RegistrableCommand {
+public final class DumpModsCommand implements RegistrableCommand {
   private final String label;
   private final @Nullable CommandPermission permission;
   private final Path dumpFile;
 
-  DumpModsCommand(
+  public DumpModsCommand(
     final String primaryAlias,
     final @Nullable CommandPermission permission
   ) {

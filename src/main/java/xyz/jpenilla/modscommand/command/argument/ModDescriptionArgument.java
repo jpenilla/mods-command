@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command.argument;
 
 import cloud.commandframework.ArgumentDescription;
 import cloud.commandframework.CommandManager;
@@ -30,13 +30,15 @@ import java.util.function.BiFunction;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import xyz.jpenilla.modscommand.command.Commander;
+import xyz.jpenilla.modscommand.model.ModDescription;
 
 import static cloud.commandframework.arguments.parser.ArgumentParseResult.failure;
 import static cloud.commandframework.arguments.parser.ArgumentParseResult.success;
-import static xyz.jpenilla.modscommand.Mods.mods;
+import static xyz.jpenilla.modscommand.model.Mods.mods;
 
 @DefaultQualifier(NonNull.class)
-final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
+public final class ModDescriptionArgument extends CommandArgument<Commander, ModDescription> {
   private ModDescriptionArgument(
     final boolean required,
     final String name,

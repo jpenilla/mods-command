@@ -14,29 +14,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.util;
 
-import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
-import net.kyori.adventure.audience.Audience;
-import net.kyori.adventure.audience.ForwardingAudience;
-import net.kyori.adventure.platform.fabric.FabricClientAudiences;
-import net.minecraft.commands.CommandSourceStack;
+import net.kyori.adventure.text.format.TextColor;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
+import static net.kyori.adventure.text.format.TextColor.color;
+
 @DefaultQualifier(NonNull.class)
-interface Commander extends ForwardingAudience.Single {
-  record ClientCommander(FabricClientCommandSource source) implements Commander {
-    @Override
-    public Audience audience() {
-      return FabricClientAudiences.of().audience();
-    }
+public final class Colors {
+  private Colors() {
   }
 
-  record ServerCommander(CommandSourceStack source) implements Commander {
-    @Override
-    public Audience audience() {
-      return this.source;
-    }
-  }
+  public static final TextColor EMERALD = color(0x4BE173);
+  public static final TextColor ORANGE = color(0xED9234);
+  public static final TextColor BLUE = color(0x1E90FF);
+  public static final TextColor BRIGHT_BLUE = color(0x7DCFE2);
+  public static final TextColor MIDNIGHT_BLUE = color(0x4D4F58);
+  public static final TextColor PINK = color(0xDF678C);
+  public static final TextColor PURPLE = color(0x843DE8);
+  public static final TextColor MUSTARD = color(0xFEE455);
 }

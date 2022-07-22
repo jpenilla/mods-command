@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.model;
 
 import com.google.common.collect.ImmutableMap;
 import java.util.ArrayList;
@@ -30,7 +30,7 @@ import net.fabricmc.loader.api.metadata.CustomValue;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
-import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
+import xyz.jpenilla.modscommand.ModsCommandModInitializer;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
@@ -41,7 +41,7 @@ import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
 @DefaultQualifier(NonNull.class)
-final class Mods {
+public final class Mods {
   private static final String QSL_MOD_ID = "qsl";
   private static final String FABRIC_API_MOD_ID = "fabric";
   private static final String QUILTED_FABRIC_API_MOD_ID = "quilted_fabric_api";
@@ -122,7 +122,7 @@ final class Mods {
       }
       for (final ModDescription child : children) {
         descriptions.remove(child.modId());
-        ((ModDescription.AbstractModDescription) parent).addChild(child);
+        ((AbstractModDescription) parent).addChild(child);
       }
     });
   }
@@ -133,7 +133,7 @@ final class Mods {
       return;
     }
     // QSL mod may not exist (in case of qfapi qsl)
-    final ModDescription qsl = descriptions.computeIfAbsent(QSL_MOD_ID, id -> new ModDescription.ModDescriptionImpl(
+    final ModDescription qsl = descriptions.computeIfAbsent(QSL_MOD_ID, id -> ModDescription.create(
       qslModules,
       id,
       "Quilt Standard Libraries",
@@ -144,7 +144,7 @@ final class Mods {
       emptyList(),
       emptyList(),
       emptyMap(),
-      ModDescription.Environment.UNIVERSAL
+      Environment.UNIVERSAL
     ));
     qslModules.forEach(module -> {
       descriptions.remove(module.modId());
@@ -166,7 +166,7 @@ final class Mods {
         .toList();
       qfapiModules.forEach(module -> {
         descriptions.remove(module.modId());
-        ((ModDescription.AbstractModDescription) qfapi).addChild(module);
+        ((AbstractModDescription) qfapi).addChild(module);
       });
     }
   }
@@ -179,7 +179,7 @@ final class Mods {
         .toList();
       fapiModules.forEach(module -> {
         descriptions.remove(module.modId());
-        ((ModDescription.AbstractModDescription) fapi).addChild(module);
+        ((AbstractModDescription) fapi).addChild(module);
       });
     }
   }
@@ -192,7 +192,7 @@ final class Mods {
     if (!loomGeneratedMods.isEmpty()) {
       descriptions.put(
         "loom-generated",
-        new ModDescription.ModDescriptionImpl(
+        ModDescription.create(
           loomGeneratedMods,
           "loom-generated",
           "Loom Generated",
@@ -203,7 +203,7 @@ final class Mods {
           emptyList(),
           emptyList(),
           emptyMap(),
-          ModDescription.Environment.UNIVERSAL
+          Environment.UNIVERSAL
         )
       );
     }

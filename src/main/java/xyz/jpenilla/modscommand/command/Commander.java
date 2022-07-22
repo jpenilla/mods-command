@@ -14,13 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command;
 
-import cloud.commandframework.CommandManager;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.audience.ForwardingAudience;
+import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.minecraft.commands.CommandSourceStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)
-interface RegistrableCommand {
-  void register(final CommandManager<Commander> commandManager);
+public interface Commander extends ForwardingAudience.Single {
+  record ClientCommander(FabricClientCommandSource source) implements Commander {
+    @Override
+    public Audience audience() {
+      return FabricClientAudiences.of().audience();
+    }
+  }
+
+  record ServerCommander(CommandSourceStack source) implements Commander {
+    @Override
+    public Audience audience() {
+      return this.source;
+    }
+  }
 }

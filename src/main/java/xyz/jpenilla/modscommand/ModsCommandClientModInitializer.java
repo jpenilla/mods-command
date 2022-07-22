@@ -23,6 +23,11 @@ import java.util.function.Function;
 import net.fabricmc.api.ClientModInitializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import xyz.jpenilla.modscommand.command.Commander;
+import xyz.jpenilla.modscommand.command.Commands;
+import xyz.jpenilla.modscommand.command.RegistrableCommand;
+import xyz.jpenilla.modscommand.command.commands.DumpModsCommand;
+import xyz.jpenilla.modscommand.command.commands.ModsCommand;
 
 @DefaultQualifier(NonNull.class)
 public final class ModsCommandClientModInitializer implements ClientModInitializer {
@@ -41,6 +46,6 @@ public final class ModsCommandClientModInitializer implements ClientModInitializ
 
   private void registerCommand(final CommandManager<Commander> commandManager, final String label, final Function<String, RegistrableCommand> factory) {
     factory.apply(label).register(commandManager);
-    factory.apply(String.format("modscommand:%s", label)).register(commandManager);
+    factory.apply("modscommand:%s".formatted(label)).register(commandManager);
   }
 }

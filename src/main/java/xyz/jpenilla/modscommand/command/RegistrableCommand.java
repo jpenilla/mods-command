@@ -14,27 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command;
 
-import java.util.HashSet;
-import java.util.Set;
+import cloud.commandframework.CommandManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
-import org.spongepowered.configurate.objectmapping.ConfigSerializable;
-import org.spongepowered.configurate.objectmapping.meta.Comment;
 
-@ConfigSerializable
 @DefaultQualifier(NonNull.class)
-public final class Config {
-  private HiddenMods hiddenMods = new HiddenMods();
-
-  @ConfigSerializable
-  public static final class HiddenMods {
-    @Comment("Set the list of mod-ids to hide/ignore.")
-    private Set<String> hiddenModIds = new HashSet<>();
-  }
-
-  public @NonNull Set<String> hiddenModIds() {
-    return this.hiddenMods.hiddenModIds;
-  }
+public interface RegistrableCommand {
+  void register(final CommandManager<Commander> commandManager);
 }

@@ -14,21 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command;
 
 import cloud.commandframework.fabric.FabricCommandManager;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import xyz.jpenilla.modscommand.command.argument.ModDescriptionArgument;
 
 import static cloud.commandframework.minecraft.extras.AudienceProvider.nativeAudience;
 
 @DefaultQualifier(NonNull.class)
-final class Commands {
+public final class Commands {
   private Commands() {
   }
 
-  static void configureCommandManager(final @NonNull FabricCommandManager<Commander, ?> manager) {
+  public static void configureCommandManager(final @NonNull FabricCommandManager<Commander, ?> manager) {
     manager.brigadierManager().setNativeNumberSuggestions(false);
 
     new MinecraftExceptionHandler<Commander>()

@@ -14,7 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.command.commands;
 
 import cloud.commandframework.Command;
 import cloud.commandframework.CommandManager;
@@ -42,6 +42,11 @@ import net.kyori.adventure.text.event.ClickEvent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import xyz.jpenilla.modscommand.command.Commander;
+import xyz.jpenilla.modscommand.command.RegistrableCommand;
+import xyz.jpenilla.modscommand.command.argument.ModDescriptionArgument;
+import xyz.jpenilla.modscommand.model.Environment;
+import xyz.jpenilla.modscommand.model.ModDescription;
 import xyz.jpenilla.modscommand.util.BiIntFunction;
 import xyz.jpenilla.modscommand.util.Pagination;
 
@@ -58,17 +63,17 @@ import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
-import static xyz.jpenilla.modscommand.Colors.BLUE;
-import static xyz.jpenilla.modscommand.Colors.BRIGHT_BLUE;
-import static xyz.jpenilla.modscommand.Colors.EMERALD;
-import static xyz.jpenilla.modscommand.Colors.MIDNIGHT_BLUE;
-import static xyz.jpenilla.modscommand.Colors.MUSTARD;
-import static xyz.jpenilla.modscommand.Colors.PINK;
-import static xyz.jpenilla.modscommand.Colors.PURPLE;
-import static xyz.jpenilla.modscommand.Mods.mods;
+import static xyz.jpenilla.modscommand.model.Mods.mods;
+import static xyz.jpenilla.modscommand.util.Colors.BLUE;
+import static xyz.jpenilla.modscommand.util.Colors.BRIGHT_BLUE;
+import static xyz.jpenilla.modscommand.util.Colors.EMERALD;
+import static xyz.jpenilla.modscommand.util.Colors.MIDNIGHT_BLUE;
+import static xyz.jpenilla.modscommand.util.Colors.MUSTARD;
+import static xyz.jpenilla.modscommand.util.Colors.PINK;
+import static xyz.jpenilla.modscommand.util.Colors.PURPLE;
 
 @DefaultQualifier(NonNull.class)
-final class ModsCommand implements RegistrableCommand {
+public final class ModsCommand implements RegistrableCommand {
   private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = SimpleCloudKey.of("mod_id", TypeToken.get(ModDescription.class));
   private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page_number", TypeToken.get(Integer.class));
   private static final CloudKey<String> QUERY_ARGUMENT_KEY = SimpleCloudKey.of("query", TypeToken.get(String.class));
@@ -79,7 +84,7 @@ final class ModsCommand implements RegistrableCommand {
   private final String label;
   private final @Nullable CommandPermission permission;
 
-  ModsCommand(final String primaryAlias, final @Nullable CommandPermission permission) {
+  public ModsCommand(final String primaryAlias, final @Nullable CommandPermission permission) {
     this.label = primaryAlias;
     this.permission = permission;
   }
@@ -219,8 +224,8 @@ final class ModsCommand implements RegistrableCommand {
     final String queryLower = query.toLowerCase(Locale.ENGLISH);
     return mod -> mod.modId().toLowerCase(Locale.ENGLISH).contains(queryLower)
       || mod.name().toLowerCase(Locale.ENGLISH).contains(queryLower)
-      || "clientsided client-sided client sided".contains(queryLower) && mod.environment() == ModDescription.Environment.CLIENT
-      || "serversided server-sided server sided".contains(queryLower) && mod.environment() == ModDescription.Environment.SERVER
+      || "clientsided client-sided client sided".contains(queryLower) && mod.environment() == Environment.CLIENT
+      || "serversided server-sided server sided".contains(queryLower) && mod.environment() == Environment.SERVER
       || mod.authors().stream().anyMatch(author -> author.toLowerCase(Locale.ENGLISH).contains(queryLower));
   }
 
@@ -330,7 +335,7 @@ final class ModsCommand implements RegistrableCommand {
     builder.append(newline())
       .append(space())
       .append(labelled("type", text(mod.type())));
-    if (mod.environment() != ModDescription.Environment.UNIVERSAL) { // should be fine
+    if (mod.environment() != Environment.UNIVERSAL) { // should be fine
       builder.append(newline())
         .append(space())
         .append(labelled("environment", mod.environment().display()));

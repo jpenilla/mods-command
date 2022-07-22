@@ -14,25 +14,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package xyz.jpenilla.modscommand;
+package xyz.jpenilla.modscommand.configuration;
 
-import net.kyori.adventure.text.format.TextColor;
+import java.util.HashSet;
+import java.util.Set;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.spongepowered.configurate.objectmapping.ConfigSerializable;
+import org.spongepowered.configurate.objectmapping.meta.Comment;
 
-import static net.kyori.adventure.text.format.TextColor.color;
-
+@ConfigSerializable
 @DefaultQualifier(NonNull.class)
-final class Colors {
-  private Colors() {
+public final class Config {
+  private HiddenMods hiddenMods = new HiddenMods();
+
+  @ConfigSerializable
+  public static final class HiddenMods {
+    @Comment("Set the list of mod-ids to hide/ignore.")
+    private Set<String> hiddenModIds = new HashSet<>();
   }
 
-  public static final TextColor EMERALD = color(0x4BE173);
-  public static final TextColor ORANGE = color(0xED9234);
-  public static final TextColor BLUE = color(0x1E90FF);
-  public static final TextColor BRIGHT_BLUE = color(0x7DCFE2);
-  public static final TextColor MIDNIGHT_BLUE = color(0x4D4F58);
-  public static final TextColor PINK = color(0xDF678C);
-  public static final TextColor PURPLE = color(0x843DE8);
-  public static final TextColor MUSTARD = color(0xFEE455);
+  public @NonNull Set<String> hiddenModIds() {
+    return this.hiddenMods.hiddenModIds;
+  }
 }

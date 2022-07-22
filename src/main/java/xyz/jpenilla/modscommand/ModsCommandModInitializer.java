@@ -32,8 +32,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
+import xyz.jpenilla.modscommand.command.Commander;
+import xyz.jpenilla.modscommand.command.Commands;
+import xyz.jpenilla.modscommand.command.commands.DumpModsCommand;
+import xyz.jpenilla.modscommand.command.commands.ModsCommand;
+import xyz.jpenilla.modscommand.configuration.Config;
+import xyz.jpenilla.modscommand.model.Mods;
 
-import static xyz.jpenilla.modscommand.Mods.mods;
+import static xyz.jpenilla.modscommand.model.Mods.mods;
 
 @DefaultQualifier(NonNull.class)
 public final class ModsCommandModInitializer implements ModInitializer {
