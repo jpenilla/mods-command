@@ -30,11 +30,11 @@ public final class Config {
 
   @ConfigSerializable
   public static final class HiddenMods {
-    @Comment("Set the list of mod-ids to hide/ignore.")
+    @Comment("Set the list of mod ids to hide/ignore.")
     private Set<String> hiddenModIds = new HashSet<>();
   }
 
-  public @NonNull Set<String> hiddenModIds() {
+  public Set<String> hiddenModIds() {
     return this.hiddenMods.hiddenModIds;
   }
 }

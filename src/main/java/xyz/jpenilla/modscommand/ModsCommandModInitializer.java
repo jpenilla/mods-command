@@ -20,23 +20,19 @@ import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.fabric.FabricServerCommandManager;
 import cloud.commandframework.permission.Permission;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import net.fabricmc.loader.api.ModContainer;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.spongepowered.configurate.CommentedConfigurationNode;
-import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.command.Commands;
 import xyz.jpenilla.modscommand.command.commands.DumpModsCommand;
 import xyz.jpenilla.modscommand.command.commands.ModsCommand;
 import xyz.jpenilla.modscommand.configuration.Config;
+import xyz.jpenilla.modscommand.configuration.ConfigHolder;
 import xyz.jpenilla.modscommand.model.Mods;
 
 import static xyz.jpenilla.modscommand.model.Mods.mods;
@@ -44,16 +40,17 @@ import static xyz.jpenilla.modscommand.model.Mods.mods;
 @DefaultQualifier(NonNull.class)
 public final class ModsCommandModInitializer implements ModInitializer {
   private static @MonotonicNonNull ModsCommandModInitializer instance;
-  static final Logger LOGGER = LoggerFactory.getLogger("Mods Command");
-  private @MonotonicNonNull ModContainer modContainer;
-  private @MonotonicNonNull Config config;
+  public static final Logger LOGGER = LoggerFactory.getLogger("Mods Command");
+
+  private final ConfigHolder<Config> configHolder = ConfigHolder.create(
+    FabricLoader.getInstance().getModContainer("mods-command").orElseThrow(),
+    Config.class
+  );
 
   @Override
   public void onInitialize() {
     instance = this;
 
-    this.modContainer = FabricLoader.getInstance().getModContainer("mods-command")
-      .orElseThrow(() -> new IllegalStateException("Could not find mod container for Mods Command"));
     this.loadConfig();
 
     final Mods mods = mods(); // Initialize so it can't fail later
@@ -74,28 +71,15 @@ public final class ModsCommandModInitializer implements ModInitializer {
   }
 
   private void loadConfig() {
-    final Path configFile = FabricLoader.getInstance().getConfigDir()
-      .resolve(this.modContainer.getMetadata().getId() + ".conf");
-    final HoconConfigurationLoader loader = HoconConfigurationLoader.builder()
-      .path(configFile)
-      .build();
     try {
-      if (!Files.exists(configFile.getParent())) {
-        Files.createDirectories(configFile.getParent());
-      }
-      final CommentedConfigurationNode load = loader.load();
-      this.config = load.get(Config.class);
-      loader.save(loader.createNode(node -> node.set(this.config)));
+      this.configHolder.load();
     } catch (final IOException ex) {
-      throw new RuntimeException("Failed to load config", ex);
+      throw new RuntimeException("Failed to load Mods Command config", ex);
     }
   }
 
   public Config config() {
-    if (this.config == null) {
-      throw new IllegalStateException("Mods Command config not yet loaded!");
-    }
-    return this.config;
+    return this.configHolder.config();
   }
 
   public static ModsCommandModInitializer instance() {
