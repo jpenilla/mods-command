@@ -23,8 +23,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
@@ -37,6 +35,7 @@ import xyz.jpenilla.modscommand.ModDescription.WrappingModDescription;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.emptyMap;
 import static java.util.Comparator.comparing;
+import static java.util.function.UnaryOperator.identity;
 import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
@@ -56,15 +55,19 @@ final class Mods {
   private Mods() {
     this.rootMods = loadModDescriptions();
     this.mods = this.rootMods.values().stream().flatMap(ModDescription::selfAndChildren).collect(toUnmodifiableSet());
-    this.modsById = this.mods.stream().collect(toUnmodifiableMap(ModDescription::modId, Function.identity()));
+    this.modsById = this.mods.stream().collect(toUnmodifiableMap(ModDescription::modId, identity()));
   }
 
   public @Nullable ModDescription findMod(final String modId) {
     return this.modsById.get(modId);
   }
 
-  public int modCount() {
+  public int totalModCount() {
     return this.mods.size();
+  }
+
+  public int topLevelModCount() {
+    return this.rootMods.size();
   }
 
   public Stream<ModDescription> allMods() {
@@ -89,13 +92,13 @@ final class Mods {
       .map(ModContainer::getMetadata)
       .map(WrappingModDescription::new)
       .filter(mod -> !hiddenModIds.contains(mod.modId()))
-      .collect(toMap(ModDescription::modId, UnaryOperator.identity()));
+      .collect(toMap(ModDescription::modId, identity()));
 
-    arrangeChildModsUsingModMenuMetadata(descriptions);
     arrangeQSLChildren(descriptions);
     arrangeQFapiChildren(descriptions);
     arrangeFapiChildren(descriptions);
     arrangeLoomGenerated(descriptions);
+    arrangeChildModsUsingModMenuMetadata(descriptions);
 
     return ImmutableMap.<String, ModDescription>builder()
       .orderEntriesByValue(comparing(ModDescription::modId))

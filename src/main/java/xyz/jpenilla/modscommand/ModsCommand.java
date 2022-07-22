@@ -130,7 +130,7 @@ final class ModsCommand implements RegistrableCommand {
     final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
       .header((currentPage, pages) -> Component.textOfChildren(
         text("Loaded Mods", PURPLE, BOLD),
-        text(String.format(" (%s total, %s top-level)", mods().modCount(), mods().topLevelMods().size()), GRAY, ITALIC)
+        text(String.format(" (%s total, %s top-level)", mods().totalModCount(), mods().topLevelModCount()), GRAY, ITALIC)
       ))
       .footer(this.footerRenderer(p -> String.format("/%s page %d", this.label, p)))
       .pageOutOfRange(ModsCommand::pageOutOfRange)
