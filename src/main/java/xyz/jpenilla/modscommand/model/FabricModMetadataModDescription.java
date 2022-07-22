@@ -16,6 +16,8 @@
  */
 package xyz.jpenilla.modscommand.model;
 
+import io.leangen.geantyref.GenericTypeReflector;
+import io.leangen.geantyref.TypeToken;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
@@ -28,19 +30,15 @@ import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)
-public final class WrappingModDescription extends AbstractModDescription {
+final class FabricModMetadataModDescription extends AbstractModDescription {
   private final ModMetadata metadata;
 
-  public WrappingModDescription(
+  FabricModMetadataModDescription(
     final ModMetadata metadata,
     final ModDescription... children
   ) {
     super(Arrays.asList(children));
     this.metadata = metadata;
-  }
-
-  public ModMetadata wrapped() {
-    return this.metadata;
   }
 
   @Override
@@ -95,6 +93,23 @@ public final class WrappingModDescription extends AbstractModDescription {
   @Override
   public Environment environment() {
     return fromFabric(this.metadata.getEnvironment());
+  }
+
+  @Override
+  public boolean hasAttribute(final TypeToken<?> type) {
+    if (GenericTypeReflector.erase(type.getType()).equals(ModMetadata.class)) {
+      return true;
+    }
+    return super.hasAttribute(type);
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public <A> A attribute(final TypeToken<A> type) {
+    if (GenericTypeReflector.erase(type.getType()).equals(ModMetadata.class)) {
+      return (A) this.metadata;
+    }
+    return super.attribute(type);
   }
 
   @Override

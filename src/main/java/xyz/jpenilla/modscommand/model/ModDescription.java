@@ -16,10 +16,12 @@
  */
 package xyz.jpenilla.modscommand.model;
 
+import io.leangen.geantyref.TypeToken;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.kyori.examination.Examinable;
 import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -51,6 +53,22 @@ public interface ModDescription extends Examinable {
   Map<String, String> contact();
 
   Environment environment();
+
+  default boolean hasAttribute(final TypeToken<?> type) {
+    return false;
+  }
+
+  default boolean hasAttribute(final Class<?> type) {
+    return this.hasAttribute(TypeToken.get(type));
+  }
+
+  default <A> A attribute(final TypeToken<A> type) {
+    throw new IllegalArgumentException();
+  }
+
+  default <A> A attribute(final Class<A> type) {
+    return this.attribute(TypeToken.get(type));
+  }
 
   default Stream<ModDescription> parentStream() {
     final @Nullable ModDescription parent = this.parent();
@@ -89,6 +107,10 @@ public interface ModDescription extends Examinable {
       ExaminableProperty.of("parent", parent == null ? null : parent.modId()),
       ExaminableProperty.of("children", this.children())
     );
+  }
+
+  static ModDescription fromFabric(final ModMetadata fabric) {
+    return new FabricModMetadataModDescription(fabric);
   }
 
   static ModDescription create(

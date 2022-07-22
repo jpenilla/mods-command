@@ -27,6 +27,7 @@ import java.util.stream.Stream;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
+import net.fabricmc.loader.api.metadata.ModMetadata;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -90,7 +91,7 @@ public final class Mods {
 
     final Map<String, ModDescription> descriptions = loader.getAllMods().stream()
       .map(ModContainer::getMetadata)
-      .map(WrappingModDescription::new)
+      .map(ModDescription::fromFabric)
       .filter(mod -> !hiddenModIds.contains(mod.modId()))
       .collect(toMap(ModDescription::modId, identity()));
 
@@ -149,7 +150,7 @@ public final class Mods {
     qslModules.forEach(module -> {
       descriptions.remove(module.modId());
       if (!qsl.children().contains(module)) {
-        ((WrappingModDescription) qsl).addChild(module);
+        ((AbstractModDescription) qsl).addChild(module);
       }
     });
   }
@@ -159,8 +160,8 @@ public final class Mods {
     if (qfapi != null) {
       final List<ModDescription> qfapiModules = descriptions.values().stream()
         .filter(it -> {
-          return it instanceof WrappingModDescription
-            && ((WrappingModDescription) it).wrapped().containsCustomValue(FABRIC_API_MODULE_MARKER)
+          return it.hasAttribute(ModMetadata.class)
+            && it.attribute(ModMetadata.class).containsCustomValue(FABRIC_API_MODULE_MARKER)
             && it.modId().startsWith("quilted_"); // not ideal, but works
         })
         .toList();
@@ -175,7 +176,7 @@ public final class Mods {
     final @Nullable ModDescription fapi = descriptions.get(FABRIC_API_MOD_ID);
     if (fapi != null) {
       final List<ModDescription> fapiModules = descriptions.values().stream()
-        .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(FABRIC_API_MODULE_MARKER))
+        .filter(it -> it.hasAttribute(ModMetadata.class) && it.attribute(ModMetadata.class).containsCustomValue(FABRIC_API_MODULE_MARKER))
         .toList();
       fapiModules.forEach(module -> {
         descriptions.remove(module.modId());
@@ -186,7 +187,7 @@ public final class Mods {
 
   private static void arrangeLoomGenerated(final Map<String, ModDescription> descriptions) {
     final List<ModDescription> loomGeneratedMods = descriptions.values().stream()
-      .filter(it -> it instanceof WrappingModDescription && ((WrappingModDescription) it).wrapped().containsCustomValue(LOOM_GENERATED_MARKER))
+      .filter(it -> it.hasAttribute(ModMetadata.class) && it.attribute(ModMetadata.class).containsCustomValue(LOOM_GENERATED_MARKER))
       .toList();
     loomGeneratedMods.forEach(module -> descriptions.remove(module.modId()));
     if (!loomGeneratedMods.isEmpty()) {
@@ -216,15 +217,15 @@ public final class Mods {
   }
 
   private static @Nullable String parentUsingModMenuMetadata(final ModDescription modDescription) {
-    if (!(modDescription instanceof WrappingModDescription wrapping)) {
+    if (!modDescription.hasAttribute(ModMetadata.class)) {
       return null;
     }
-    if (!wrapping.wrapped().containsCustomValue("modmenu")
-      || !wrapping.wrapped().getCustomValue("modmenu").getAsObject().containsKey("parent")) {
+    final ModMetadata meta = modDescription.attribute(ModMetadata.class);
+    if (!meta.containsCustomValue("modmenu")
+      || !meta.getCustomValue("modmenu").getAsObject().containsKey("parent")) {
       return null;
     }
-    final CustomValue parent = wrapping.wrapped()
-      .getCustomValue("modmenu")
+    final CustomValue parent = meta.getCustomValue("modmenu")
       .getAsObject()
       .get("parent");
     if (parent.getType() == CustomValue.CvType.STRING) {
