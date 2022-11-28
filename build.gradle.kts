@@ -41,7 +41,7 @@ dependencies {
   modImplementation(include("cloud.commandframework", "cloud-fabric", "1.7.1"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.7.1"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.5.0-SNAPSHOT"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.5.0"))
 
   val configurateVersion = "4.1.2"
   implementation(include("org.spongepowered:configurate-core:$configurateVersion")!!)
