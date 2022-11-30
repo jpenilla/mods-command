@@ -44,7 +44,8 @@ import static java.util.stream.Collectors.toUnmodifiableSet;
 @DefaultQualifier(NonNull.class)
 public final class Mods {
   private static final String QSL_MOD_ID = "qsl";
-  private static final String FABRIC_API_MOD_ID = "fabric";
+  private static final String LEGACY_FABRIC_API_MOD_ID = "fabric";
+  private static final String FABRIC_API_MOD_ID = "fabric-api";
   private static final String QUILTED_FABRIC_API_MOD_ID = "quilted_fabric_api";
   private static final String FABRIC_API_MODULE_MARKER = "fabric-api:module-lifecycle";
   private static final String LOOM_GENERATED_MARKER = "fabric-loom:generated";
@@ -173,16 +174,25 @@ public final class Mods {
   }
 
   private static void arrangeFapiChildren(final Map<String, ModDescription> descriptions) {
-    final @Nullable ModDescription fapi = descriptions.get(FABRIC_API_MOD_ID);
-    if (fapi != null) {
-      final List<ModDescription> fapiModules = descriptions.values().stream()
-        .filter(it -> it.hasAttribute(ModMetadata.class) && it.attribute(ModMetadata.class).containsCustomValue(FABRIC_API_MODULE_MARKER))
-        .toList();
-      fapiModules.forEach(module -> {
-        descriptions.remove(module.modId());
-        ((AbstractModDescription) fapi).addChild(module);
-      });
+    final @Nullable ModDescription fapi = fabricApi(descriptions);
+    if (fapi == null) {
+      return;
     }
+    final List<ModDescription> fapiModules = descriptions.values().stream()
+      .filter(it -> it.hasAttribute(ModMetadata.class) && it.attribute(ModMetadata.class).containsCustomValue(FABRIC_API_MODULE_MARKER))
+      .toList();
+    fapiModules.forEach(module -> {
+      descriptions.remove(module.modId());
+      ((AbstractModDescription) fapi).addChild(module);
+    });
+  }
+
+  private static @Nullable ModDescription fabricApi(final Map<String, ModDescription> descriptions) {
+    @Nullable ModDescription fapi = descriptions.get(FABRIC_API_MOD_ID);
+    if (fapi == null) {
+      fapi = descriptions.get(LEGACY_FABRIC_API_MOD_ID);
+    }
+    return fapi;
   }
 
   private static void arrangeLoomGenerated(final Map<String, ModDescription> descriptions) {
