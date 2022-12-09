@@ -16,6 +16,7 @@
  */
 package xyz.jpenilla.modscommand.command;
 
+import cloud.commandframework.execution.FilteringCommandSuggestionProcessor;
 import cloud.commandframework.fabric.FabricCommandManager;
 import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
@@ -30,6 +31,10 @@ public final class Commands {
   }
 
   public static void configureCommandManager(final @NonNull FabricCommandManager<Commander, ?> manager) {
+    manager.commandSuggestionProcessor(new FilteringCommandSuggestionProcessor<>(
+      FilteringCommandSuggestionProcessor.Filter.<Commander>contains(true).andTrimBeforeLastSpace()
+    ));
+
     manager.brigadierManager().setNativeNumberSuggestions(false);
 
     new MinecraftExceptionHandler<Commander>()
