@@ -15,33 +15,23 @@ val githubUrl = "https://github.com/jpenilla/ModsCommand"
 
 repositories {
   mavenCentral()
-  maven("https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-    mavenContent { snapshotsOnly() }
-  }
-  maven("https://oss.sonatype.org/content/repositories/snapshots/") {
-    mavenContent { snapshotsOnly() }
-  }
+  sonatype.s01Snapshots()
+  sonatype.ossSnapshots()
   maven("https://maven.fabricmc.net/")
-  maven("https://repo.incendo.org/content/repositories/snapshots/") {
-    mavenContent {
-      snapshotsOnly()
-      includeGroup("cloud.commandframework")
-    }
-  }
 }
 
-val minecraftVersion = "1.19.2"
+val minecraftVersion = "1.19.3"
 
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.14.10")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.67.1+1.19.2")
+  modImplementation("net.fabricmc", "fabric-loader", "0.14.11")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.7.1"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.7.1"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.8.0-SNAPSHOT"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.8.0-SNAPSHOT"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.5.0"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.6.0"))
 
   val configurateVersion = "4.1.2"
   implementation(include("org.spongepowered:configurate-core:$configurateVersion")!!)
@@ -51,7 +41,7 @@ dependencies {
   implementation(include("org.spongepowered:configurate-yaml:$configurateVersion")!!)
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.27.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.28.0")
 }
 
 tasks {
