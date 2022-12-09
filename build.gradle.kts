@@ -7,11 +7,11 @@ plugins {
   id("quiet-fabric-loom") version "1.0-SNAPSHOT"
 }
 
-version = "1.0.12-SNAPSHOT"
+version = "1.0.12"
   .run { if (endsWith("-SNAPSHOT")) "$this+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}" else this }
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
-val githubUrl = "https://github.com/jpenilla/ModsCommand"
+val githubUrl = "https://github.com/jpenilla/mods-command"
 
 repositories {
   mavenCentral()
