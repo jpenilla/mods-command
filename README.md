@@ -9,13 +9,14 @@ Requires [Fabric API](https://www.curseforge.com/minecraft/mc-mods/fabric-api).
 
 *(Minecraft Command Syntax Reference: [Minecraft Wiki](https://minecraft.fandom.com/wiki/Commands#Syntax))*
 
-Command | Description | Permission
---------|-------------|-----------
-`/mods [page] [<page_number>]` | Displays a paginated view of installed mods. | `modscommand.mods`
-`/mods info <mod_id>` | Displays detailed information about the specified mod. | `modscommand.mods`
-`/mods info <mod_id> children [<page_number>]` | Displays a paginated view of child mods for the specified mod. | `modscommand.mods`
-`/mods search <query> [<page_number>]` | Displays a paginated view of mods matching the search query. | `modscommand.mods`
-`/dumpmods` | Dumps the list of installed mods and some information about the current environment to `installed-mods.yml` in the game directory. When used in game, the contents of the file can be copied to the clipboard by clicking a chat message. This is a diagnostics command, meant to aid in creating more useful bug reports. | `modscommand.dumpmods`
+ Command                                        | Description                                                                                                                                                                                                                                                                                                                | Permission             
+------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------
+ `/mods [page] [<page_number>]`                 | Displays a paginated view of installed mods.                                                                                                                                                                                                                                                                               | `modscommand.mods`     
+ `/mods info <mod_id>`                          | Displays detailed information about the specified mod.                                                                                                                                                                                                                                                                     | `modscommand.mods`     
+ `/mods info <mod_id> children [<page_number>]` | Displays a paginated view of child mods for the specified mod.                                                                                                                                                                                                                                                             | `modscommand.mods`     
+ `/mods search <query> [<page_number>]`         | Displays a paginated view of mods matching the search query.                                                                                                                                                                                                                                                               | `modscommand.mods`     
+ `/mods config <mod_id>`                        | Opens the Mod Menu config screen for the specified mod. This command is only registered when installed on the client and Mod Menu is installed.                                                                                                                                                                            | `modscommand.mods`     
+ `/dumpmods`                                    | Dumps the list of installed mods and some information about the current environment to `installed-mods.yml` in the game directory. When used in game, the contents of the file can be copied to the clipboard by clicking a chat message. This is a diagnostics command, meant to aid in creating more useful bug reports. | `modscommand.dumpmods` 
 
 ### Client Commands
 
@@ -25,6 +26,7 @@ All of Mods Command's commands are usable as client commands.
 
 - `/mods` and all subcommands are registered under `/clientmods` and `/modscommand:clientmods`.
 - `/dumpmods` is registered as `/dumpclientmods` and `/modscommand:dumpclientmods`.
+- The client variants of commands do not require any permissions.
 
 ### Configuration
 
