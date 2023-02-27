@@ -1,10 +1,10 @@
 plugins {
-  val indraVersion = "2.1.1"
+  val indraVersion = "3.0.1"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "1.0-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.1-SNAPSHOT"
   id("com.modrinth.minotaur") version "2.7.2"
 }
 
