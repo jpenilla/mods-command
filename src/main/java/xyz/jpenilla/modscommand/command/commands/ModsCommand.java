@@ -145,7 +145,7 @@ public final class ModsCommand implements RegistrableCommand {
   }
 
   private static CommandArgument<Commander, Integer> pageArgument() {
-    return IntegerArgument.<Commander>newBuilder(PAGE_ARGUMENT_KEY.getName())
+    return IntegerArgument.<Commander>builder(PAGE_ARGUMENT_KEY.getName())
       .withMin(1)
       .asOptionalWithDefault(1)
       .build();

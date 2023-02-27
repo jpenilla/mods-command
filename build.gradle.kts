@@ -30,10 +30,10 @@ dependencies {
   modImplementation("net.fabricmc", "fabric-loader", "0.14.11")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.8.0-SNAPSHOT"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.8.0-SNAPSHOT"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.8.1"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.8.1"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.6.0"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.6.1"))
 
   val configurateVersion = "4.1.2"
   implementation(include("org.spongepowered:configurate-core:$configurateVersion")!!)
