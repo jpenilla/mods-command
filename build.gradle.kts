@@ -18,6 +18,7 @@ repositories {
   sonatype.s01Snapshots()
   sonatype.ossSnapshots()
   maven("https://maven.fabricmc.net/")
+  maven("https://maven.terraformersmc.com/releases/")
 }
 
 val minecraftVersion = "1.19.3"
@@ -42,6 +43,8 @@ dependencies {
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
   compileOnly("org.checkerframework", "checker-qual", "3.28.0")
+
+  modImplementation("com.terraformersmc:modmenu:5.0.2")
 }
 
 tasks {

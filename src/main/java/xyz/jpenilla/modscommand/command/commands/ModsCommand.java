@@ -25,6 +25,7 @@ import cloud.commandframework.context.CommandContext;
 import cloud.commandframework.keys.CloudKey;
 import cloud.commandframework.keys.SimpleCloudKey;
 import cloud.commandframework.permission.CommandPermission;
+import com.terraformersmc.modmenu.ModMenu;
 import io.leangen.geantyref.TypeToken;
 import java.util.List;
 import java.util.Locale;
@@ -34,11 +35,15 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentBuilder;
 import net.kyori.adventure.text.ComponentLike;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -55,6 +60,7 @@ import static net.kyori.adventure.text.Component.empty;
 import static net.kyori.adventure.text.Component.newline;
 import static net.kyori.adventure.text.Component.space;
 import static net.kyori.adventure.text.Component.text;
+import static net.kyori.adventure.text.Component.textOfChildren;
 import static net.kyori.adventure.text.Component.toComponent;
 import static net.kyori.adventure.text.event.ClickEvent.copyToClipboard;
 import static net.kyori.adventure.text.event.ClickEvent.openUrl;
@@ -108,9 +114,7 @@ public final class ModsCommand implements RegistrableCommand {
     );
     final Command.Builder<Commander> info = mods.literal("info")
       .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()));
-    manager.command(
-      info.handler(this::executeModInfo)
-    );
+    manager.command(info.handler(this::executeModInfo));
     manager.command(
       info.literal("children")
         .argument(pageArgument())
@@ -121,6 +125,23 @@ public final class ModsCommand implements RegistrableCommand {
         .argument(StringArgument.greedy(QUERY_ARGUMENT_KEY.getName()))
         .handler(this::executeSearch)
     );
+
+    if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && FabricLoader.getInstance().isModLoaded("modmenu")) {
+      manager.command(
+        mods.literal("config")
+          .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()))
+          .handler(ctx -> {
+            final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
+            final Minecraft client = Minecraft.getInstance();
+            final @Nullable Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.screen);
+            if (configScreen == null) {
+              ctx.getSender().sendMessage(textOfChildren(coloredBoldModName(mod), text(" does not have a config screen!", MUSTARD)));
+              return;
+            }
+            client.execute(() -> client.setScreen(configScreen));
+          })
+      );
+    }
   }
 
   private static CommandArgument<Commander, Integer> pageArgument() {
