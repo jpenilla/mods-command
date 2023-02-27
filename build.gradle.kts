@@ -5,6 +5,7 @@ plugins {
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
   id("quiet-fabric-loom") version "1.0-SNAPSHOT"
+  id("com.modrinth.minotaur") version "2.7.2"
 }
 
 version = "1.0.13-SNAPSHOT"
@@ -80,4 +81,14 @@ indra {
 
 license {
   header(file("LICENSE_HEADER"))
+}
+
+modrinth {
+  projectId.set("PExmWQV8")
+  versionType.set("release")
+  file.set(tasks.remapJar.flatMap { it.archiveFile })
+  gameVersions.set(listOf(minecraftVersion))
+  loaders.set(listOf("fabric"))
+  changelog.set(providers.environmentVariable("RELEASE_NOTES"))
+  token.set(providers.environmentVariable("MODRINTH_TOKEN"))
 }
