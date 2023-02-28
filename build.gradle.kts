@@ -24,14 +24,19 @@ repositories {
 
 val minecraftVersion = "1.19.3"
 
+val cloudBom: Configuration by configurations.creating
+listOf(configurations.implementation, configurations.include, configurations.modImplementation)
+  .forEach { it { extendsFrom(cloudBom) } }
+
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
   modImplementation("net.fabricmc", "fabric-loader", "0.14.11")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3")
 
-  modImplementation(include("cloud.commandframework", "cloud-fabric", "1.8.1"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras", "1.8.1"))
+  cloudBom(platform("cloud.commandframework:cloud-bom:1.8.2"))
+  modImplementation(include("cloud.commandframework", "cloud-fabric"))
+  implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "5.6.1"))
 
