@@ -5,7 +5,7 @@ plugins {
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
   id("quiet-fabric-loom") version "1.1-SNAPSHOT"
-  id("com.modrinth.minotaur") version "2.7.2"
+  id("com.modrinth.minotaur") version "2.7.4"
 }
 
 version = "1.1.2-SNAPSHOT"
@@ -22,7 +22,7 @@ repositories {
   maven("https://maven.terraformersmc.com/releases/")
 }
 
-val minecraftVersion = "1.19.3"
+val minecraftVersion = "1.19.4"
 
 val bom: Configuration by configurations.creating
 listOf(configurations.implementation, configurations.include, configurations.modImplementation)
@@ -31,14 +31,14 @@ listOf(configurations.implementation, configurations.include, configurations.mod
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.14.11")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.68.1+1.19.3")
+  modImplementation("net.fabricmc", "fabric-loader", "0.14.17")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.76.0+1.19.4")
 
-  bom(platform("cloud.commandframework:cloud-bom:1.8.2"))
+  bom(platform("cloud.commandframework:cloud-bom:1.8.3"))
   modImplementation(include("cloud.commandframework", "cloud-fabric"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.6.1"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.8.0"))
 
   bom(platform("org.spongepowered:configurate-bom:4.1.2"))
   implementation(include("org.spongepowered", "configurate-core"))
@@ -48,7 +48,7 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.28.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.32.0")
 
   modImplementation("com.terraformersmc:modmenu:5.0.2")
 }
@@ -92,8 +92,6 @@ modrinth {
   projectId.set("PExmWQV8")
   versionType.set("release")
   file.set(tasks.remapJar.flatMap { it.archiveFile })
-  gameVersions.set(listOf(minecraftVersion))
-  loaders.set(listOf("fabric"))
   changelog.set(providers.environmentVariable("RELEASE_NOTES"))
   token.set(providers.environmentVariable("MODRINTH_TOKEN"))
 }
