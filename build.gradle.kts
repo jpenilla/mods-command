@@ -8,7 +8,7 @@ plugins {
   id("com.modrinth.minotaur") version "2.7.4"
 }
 
-version = "1.1.2"
+version = "1.1.3-SNAPSHOT"
   .run { if (endsWith("-SNAPSHOT")) "$this+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}" else this }
 group = "xyz.jpenilla"
 description = "Adds commands to list, search, and get information about installed mods."
