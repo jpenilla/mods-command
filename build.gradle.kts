@@ -20,9 +20,6 @@ repositories {
   sonatype.ossSnapshots()
   maven("https://maven.fabricmc.net/")
   maven("https://maven.terraformersmc.com/releases/")
-  maven("https://repo.jpenilla.xyz/snapshots/") {
-    mavenContent { includeModule("net.kyori", "adventure-platform-fabric") }
-  }
 }
 
 val minecraftVersion = "1.20.1"
@@ -41,7 +38,7 @@ dependencies {
   modImplementation(include("cloud.commandframework", "cloud-fabric"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.10.0-SNAPSHOT"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.9.0"))
 
   bom(platform("org.spongepowered:configurate-bom:4.1.2"))
   implementation(include("org.spongepowered", "configurate-core"))
