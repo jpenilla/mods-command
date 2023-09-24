@@ -1,10 +1,10 @@
 plugins {
-  val indraVersion = "3.0.1"
+  val indraVersion = "3.1.3"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "1.2-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.3-SNAPSHOT"
   id("com.modrinth.minotaur") version "2.7.5"
 }
 
@@ -22,7 +22,7 @@ repositories {
   maven("https://maven.terraformersmc.com/releases/")
 }
 
-val minecraftVersion = "1.20.1"
+val minecraftVersion = "1.20.2"
 
 val bom: Configuration by configurations.creating
 listOf(configurations.implementation, configurations.include, configurations.modImplementation)
@@ -31,14 +31,14 @@ listOf(configurations.implementation, configurations.include, configurations.mod
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.14.21")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.83.0+1.20.1")
+  modImplementation("net.fabricmc", "fabric-loader", "0.14.22")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.89.2+1.20.2")
 
-  bom(platform("cloud.commandframework:cloud-bom:1.8.3"))
+  bom(platform("cloud.commandframework:cloud-bom:1.8.4"))
   modImplementation(include("cloud.commandframework", "cloud-fabric"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.9.0"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.10.0"))
 
   bom(platform("org.spongepowered:configurate-bom:4.1.2"))
   implementation(include("org.spongepowered", "configurate-core"))
@@ -48,9 +48,9 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.35.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.38.0")
 
-  modImplementation("com.terraformersmc:modmenu:7.0.1")
+  modImplementation("com.terraformersmc:modmenu:7.2.2")
 }
 
 tasks {
