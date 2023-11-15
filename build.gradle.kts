@@ -1,11 +1,13 @@
+import me.modmuss50.mpp.ReleaseType
+
 plugins {
   val indraVersion = "3.1.3"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
-  id("net.kyori.indra.license-header") version indraVersion
-  id("quiet-fabric-loom") version "1.3-SNAPSHOT"
-  id("com.modrinth.minotaur") version "2.7.5"
+  id("net.kyori.indra.licenser.spotless") version indraVersion
+  id("quiet-fabric-loom") version "1.4-SNAPSHOT"
+  id("me.modmuss50.mod-publish-plugin") version "0.4.5"
 }
 
 version = "1.1.5-SNAPSHOT"
@@ -84,14 +86,16 @@ indra {
   apache2License()
 }
 
-license {
-  header(file("LICENSE_HEADER"))
+indraSpotlessLicenser {
+  licenseHeaderFile(rootProject.file("LICENSE_HEADER"))
 }
 
-modrinth {
-  projectId.set("PExmWQV8")
-  versionType.set("release")
-  file.set(tasks.remapJar.flatMap { it.archiveFile })
-  changelog.set(providers.environmentVariable("RELEASE_NOTES"))
-  token.set(providers.environmentVariable("MODRINTH_TOKEN"))
+publishMods.modrinth {
+  projectId = "PExmWQV8"
+  type = ReleaseType.STABLE
+  file = tasks.remapJar.flatMap { it.archiveFile }
+  changelog = providers.environmentVariable("RELEASE_NOTES")
+  accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+  modLoaders.add("fabric")
+  minecraftVersions.add(minecraftVersion)
 }
