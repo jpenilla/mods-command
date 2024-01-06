@@ -6,7 +6,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.4-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.5-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.4.5"
 }
 
@@ -24,7 +24,7 @@ repositories {
   maven("https://maven.terraformersmc.com/releases/")
 }
 
-val minecraftVersion = "1.20.2"
+val minecraftVersion = "1.20.4"
 
 val bom: Configuration by configurations.creating
 listOf(configurations.implementation, configurations.include, configurations.modImplementation)
@@ -33,14 +33,14 @@ listOf(configurations.implementation, configurations.include, configurations.mod
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.14.22")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.89.2+1.20.2")
+  modImplementation("net.fabricmc", "fabric-loader", "0.15.3")
+  modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.1+1.20.4")
 
   bom(platform("cloud.commandframework:cloud-bom:1.8.4"))
   modImplementation(include("cloud.commandframework", "cloud-fabric"))
   implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.10.0"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.11.0-SNAPSHOT"))
 
   bom(platform("org.spongepowered:configurate-bom:4.1.2"))
   implementation(include("org.spongepowered", "configurate-core"))
@@ -50,9 +50,9 @@ dependencies {
   implementation(include("org.spongepowered", "configurate-yaml"))
   implementation(include("org.yaml", "snakeyaml", "1.+"))
 
-  compileOnly("org.checkerframework", "checker-qual", "3.38.0")
+  compileOnly("org.checkerframework", "checker-qual", "3.42.0")
 
-  modImplementation("com.terraformersmc:modmenu:7.2.2")
+  modImplementation("com.terraformersmc:modmenu:9.0.0")
 }
 
 tasks {
