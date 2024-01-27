@@ -16,17 +16,7 @@
  */
 package xyz.jpenilla.modscommand.command.commands;
 
-import cloud.commandframework.Command;
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.arguments.CommandArgument;
-import cloud.commandframework.arguments.standard.IntegerArgument;
-import cloud.commandframework.arguments.standard.StringArgument;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.keys.CloudKey;
-import cloud.commandframework.keys.SimpleCloudKey;
-import cloud.commandframework.permission.CommandPermission;
 import com.terraformersmc.modmenu.ModMenu;
-import io.leangen.geantyref.TypeToken;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -47,9 +37,15 @@ import net.minecraft.client.gui.screens.Screen;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.component.DefaultValue;
+import org.incendo.cloud.component.TypedCommandComponent;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.key.CloudKey;
+import org.incendo.cloud.permission.Permission;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.command.RegistrableCommand;
-import xyz.jpenilla.modscommand.command.argument.ModDescriptionArgument;
 import xyz.jpenilla.modscommand.model.Environment;
 import xyz.jpenilla.modscommand.model.ModDescription;
 import xyz.jpenilla.modscommand.util.BiIntFunction;
@@ -69,6 +65,10 @@ import static net.kyori.adventure.text.format.NamedTextColor.GRAY;
 import static net.kyori.adventure.text.format.TextDecoration.BOLD;
 import static net.kyori.adventure.text.format.TextDecoration.ITALIC;
 import static net.kyori.adventure.text.format.TextDecoration.UNDERLINED;
+import static org.incendo.cloud.key.CloudKey.cloudKey;
+import static org.incendo.cloud.parser.standard.IntegerParser.integerParser;
+import static org.incendo.cloud.parser.standard.StringParser.greedyStringParser;
+import static xyz.jpenilla.modscommand.command.argument.parser.ModDescriptionParser.modDescriptionParser;
 import static xyz.jpenilla.modscommand.model.Mods.mods;
 import static xyz.jpenilla.modscommand.util.Colors.BLUE;
 import static xyz.jpenilla.modscommand.util.Colors.BRIGHT_BLUE;
@@ -80,17 +80,17 @@ import static xyz.jpenilla.modscommand.util.Colors.PURPLE;
 
 @DefaultQualifier(NonNull.class)
 public final class ModsCommand implements RegistrableCommand {
-  private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = SimpleCloudKey.of("mod_id", TypeToken.get(ModDescription.class));
-  private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = SimpleCloudKey.of("page_number", TypeToken.get(Integer.class));
-  private static final CloudKey<String> QUERY_ARGUMENT_KEY = SimpleCloudKey.of("query", TypeToken.get(String.class));
+  private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = cloudKey("mod_id", ModDescription.class);
+  private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = cloudKey("page_number", Integer.class);
+  private static final CloudKey<String> QUERY_ARGUMENT_KEY = cloudKey("query", String.class);
   private static final Pattern URL_PATTERN = Pattern.compile("(?:(https?)://)?([-\\w_.]+\\.\\w{2,})(/\\S*)?"); // copied from adventure-text-serializer-legacy
   private static final Component GRAY_SEPARATOR = text(':', GRAY);
   private static final Component DASH = text(" - ", MIDNIGHT_BLUE);
 
   private final String label;
-  private final @Nullable CommandPermission permission;
+  private final @Nullable Permission permission;
 
-  public ModsCommand(final String primaryAlias, final @Nullable CommandPermission permission) {
+  public ModsCommand(final String primaryAlias, final @Nullable Permission permission) {
     this.label = primaryAlias;
     this.permission = permission;
   }
@@ -113,7 +113,7 @@ public final class ModsCommand implements RegistrableCommand {
         .handler(this::executeListMods)
     );
     final Command.Builder<Commander> info = mods.literal("info")
-      .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()));
+      .required(MOD_ARGUMENT_KEY, modDescriptionParser());
     manager.command(info.handler(this::executeModInfo));
     manager.command(
       info.literal("children")
@@ -122,20 +122,20 @@ public final class ModsCommand implements RegistrableCommand {
     );
     manager.command(
       mods.literal("search")
-        .argument(StringArgument.greedy(QUERY_ARGUMENT_KEY.getName()))
+        .required(QUERY_ARGUMENT_KEY, greedyStringParser())
         .handler(this::executeSearch)
     );
 
     if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT && FabricLoader.getInstance().isModLoaded("modmenu")) {
       manager.command(
         mods.literal("config")
-          .argument(ModDescriptionArgument.of(MOD_ARGUMENT_KEY.getName()))
+          .required(MOD_ARGUMENT_KEY, modDescriptionParser())
           .handler(ctx -> {
             final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
             final Minecraft client = Minecraft.getInstance();
             final @Nullable Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.screen);
             if (configScreen == null) {
-              ctx.getSender().sendMessage(textOfChildren(coloredBoldModName(mod), text(" does not have a config screen!", MUSTARD)));
+              ctx.sender().sendMessage(textOfChildren(coloredBoldModName(mod), text(" does not have a config screen!", MUSTARD)));
               return;
             }
             client.execute(() -> client.setScreen(configScreen));
@@ -144,15 +144,17 @@ public final class ModsCommand implements RegistrableCommand {
     }
   }
 
-  private static CommandArgument<Commander, Integer> pageArgument() {
-    return IntegerArgument.<Commander>builder(PAGE_ARGUMENT_KEY.getName())
-      .withMin(1)
-      .asOptionalWithDefault(1)
+  private static TypedCommandComponent<Commander, Integer> pageArgument() {
+    return TypedCommandComponent.<Commander, Integer>builder()
+      .parser(integerParser(1))
+      .name(PAGE_ARGUMENT_KEY.name())
+      .optional()
+      .defaultValue(DefaultValue.constant(1))
       .build();
   }
 
   private void executeListMods(final CommandContext<Commander> ctx) {
-    final int page = ctx.getOptional(PAGE_ARGUMENT_KEY).orElse(1);
+    final int page = ctx.optional(PAGE_ARGUMENT_KEY).orElse(1);
     final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
       .header((currentPage, pages) -> Component.textOfChildren(
         text("Loaded Mods", PURPLE, BOLD),
@@ -162,7 +164,7 @@ public final class ModsCommand implements RegistrableCommand {
       .pageOutOfRange(ModsCommand::pageOutOfRange)
       .item((item, lastOfPage) -> Component.textOfChildren(DASH, this.shortModDescription(item)))
       .build();
-    pagination.render(mods().topLevelMods(), page, 8).forEach(ctx.getSender()::sendMessage);
+    pagination.render(mods().topLevelMods(), page, 8).forEach(ctx.sender()::sendMessage);
   }
 
   private void executeListChildren(final CommandContext<Commander> ctx) {
@@ -176,7 +178,7 @@ public final class ModsCommand implements RegistrableCommand {
           .append(coloredBoldModName(mod))
           .apply(this.modClickAndHover(mod)))
         .append(text(" does not have any child mods!"));
-      ctx.getSender().sendMessage(message);
+      ctx.sender().sendMessage(message);
       return;
     }
     final Pagination<ModDescription> pagination = Pagination.<ModDescription>builder()
@@ -188,11 +190,11 @@ public final class ModsCommand implements RegistrableCommand {
       .pageOutOfRange(ModsCommand::pageOutOfRange)
       .item((item, lastOfPage) -> Component.textOfChildren(DASH, this.shortModDescription(item)))
       .build();
-    pagination.render(mod.children(), page, 8).forEach(ctx.getSender()::sendMessage);
+    pagination.render(mod.children(), page, 8).forEach(ctx.sender()::sendMessage);
   }
 
   private void executeSearch(final CommandContext<Commander> ctx) {
-    final String rawQuery = ctx.getOptional(QUERY_ARGUMENT_KEY).orElse("").toLowerCase(Locale.ENGLISH).trim();
+    final String rawQuery = ctx.optional(QUERY_ARGUMENT_KEY).orElse("").toLowerCase(Locale.ENGLISH).trim();
     final String[] split = rawQuery.split(" ");
     int page = 1;
     String tempQuery = rawQuery;
@@ -215,7 +217,7 @@ public final class ModsCommand implements RegistrableCommand {
       .sorted(comparing(ModDescription::modId))
       .toList();
     if (results.isEmpty()) {
-      ctx.getSender().sendMessage(
+      ctx.sender().sendMessage(
         text()
           .color(MUSTARD)
           .content("No results for query '")
@@ -238,7 +240,7 @@ public final class ModsCommand implements RegistrableCommand {
       .pageOutOfRange(ModsCommand::pageOutOfRange)
       .item((item, lastOfPage) -> Component.textOfChildren(DASH, this.shortModDescription(item)))
       .build();
-    pagination.render(results, page, 8).forEach(ctx.getSender()::sendMessage);
+    pagination.render(results, page, 8).forEach(ctx.sender()::sendMessage);
   }
 
   private static Predicate<ModDescription> matchesQuery(final String query) {
@@ -411,7 +413,7 @@ public final class ModsCommand implements RegistrableCommand {
         builder.append(info);
       });
     }
-    ctx.getSender().sendMessage(builder);
+    ctx.sender().sendMessage(builder);
   }
 
   private static Component labelled(final String label, final ComponentLike value) {

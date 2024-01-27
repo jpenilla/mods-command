@@ -16,15 +16,16 @@
  */
 package xyz.jpenilla.modscommand;
 
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.fabric.FabricServerCommandManager;
-import cloud.commandframework.permission.Permission;
 import java.io.IOException;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.fabric.FabricServerCommandManager;
+import org.incendo.cloud.permission.Permission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.jpenilla.modscommand.command.Commander;
@@ -57,9 +58,11 @@ public final class ModsCommandModInitializer implements ModInitializer {
     LOGGER.info("Mods Command detected {} loaded mods ({} top-level).", mods.totalModCount(), mods.topLevelModCount()); // We identify ourselves in log messages due to Vanilla MC's terrible Log4j config.
 
     final FabricServerCommandManager<Commander> manager = new FabricServerCommandManager<>(
-      CommandExecutionCoordinator.simpleCoordinator(),
-      Commander.ServerCommander::new,
-      commander -> ((Commander.ServerCommander) commander).source()
+      ExecutionCoordinator.simpleCoordinator(),
+      SenderMapper.create(
+        Commander.ServerCommander::new,
+        commander -> ((Commander.ServerCommander) commander).source()
+      )
     );
     Commands.configureCommandManager(manager);
 

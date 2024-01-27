@@ -33,14 +33,17 @@ listOf(configurations.implementation, configurations.include, configurations.mod
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.15.3")
+  modImplementation("net.fabricmc", "fabric-loader", "0.15.6")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.1+1.20.4")
 
-  bom(platform("cloud.commandframework:cloud-bom:1.8.4"))
-  modImplementation(include("cloud.commandframework", "cloud-fabric"))
-  implementation(include("cloud.commandframework", "cloud-minecraft-extras"))
+  bom(platform("org.incendo:cloud-bom:2.0.0-beta.1"))
+  bom(platform("org.incendo:cloud-minecraft-bom:2.0.0-beta.1"))
+  modImplementation("org.incendo:cloud-fabric:2.0.0-beta.1")
+  include("org.incendo:cloud-fabric:2.0.0-beta.1")
+  implementation("org.incendo:cloud-minecraft-extras")
+  include("org.incendo:cloud-minecraft-extras")
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.11.0-SNAPSHOT"))
+  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.11.0"))
 
   bom(platform("org.spongepowered:configurate-bom:4.1.2"))
   implementation(include("org.spongepowered", "configurate-core"))
