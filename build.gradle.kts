@@ -36,10 +36,10 @@ dependencies {
   modImplementation("net.fabricmc", "fabric-loader", "0.15.6")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.1+1.20.4")
 
-  bom(platform("org.incendo:cloud-bom:2.0.0-beta.1"))
-  bom(platform("org.incendo:cloud-minecraft-bom:2.0.0-beta.1"))
-  modImplementation("org.incendo:cloud-fabric:2.0.0-beta.1")
-  include("org.incendo:cloud-fabric:2.0.0-beta.1")
+  bom(platform("org.incendo:cloud-bom:2.0.0-beta.2"))
+  bom(platform("org.incendo:cloud-minecraft-bom:2.0.0-beta.2"))
+  modImplementation("org.incendo:cloud-fabric:2.0.0-beta.2")
+  include("org.incendo:cloud-fabric:2.0.0-beta.2")
   implementation("org.incendo:cloud-minecraft-extras")
   include("org.incendo:cloud-minecraft-extras")
 
