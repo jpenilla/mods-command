@@ -16,7 +16,7 @@
  */
 package xyz.jpenilla.modscommand.command.argument.parser;
 
-import io.leangen.geantyref.TypeToken;
+import net.minecraft.network.chat.Component;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -27,20 +27,20 @@ import org.incendo.cloud.parser.ArgumentParseResult;
 import org.incendo.cloud.parser.ArgumentParser;
 import org.incendo.cloud.parser.ParserDescriptor;
 import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
+import org.incendo.cloud.suggestion.Suggestion;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.model.ModDescription;
+import xyz.jpenilla.modscommand.util.Colors;
 
+import static org.incendo.cloud.brigadier.suggestion.TooltipSuggestion.tooltipSuggestion;
 import static org.incendo.cloud.parser.ArgumentParseResult.failure;
 import static org.incendo.cloud.parser.ArgumentParseResult.success;
 import static xyz.jpenilla.modscommand.model.Mods.mods;
 
 @DefaultQualifier(NonNull.class)
-public final class ModDescriptionParser implements ArgumentParser<Commander, ModDescription>, BlockingSuggestionProvider.Strings<Commander> {
+public final class ModDescriptionParser implements ArgumentParser<Commander, ModDescription>, BlockingSuggestionProvider<Commander> {
   public static void registerParser(final CommandManager<Commander> manager) {
-    manager.parserRegistry().registerParserSupplier(
-      TypeToken.get(ModDescription.class),
-      parserParameters -> new ModDescriptionParser()
-    );
+    manager.parserRegistry().registerParser(modDescriptionParser());
   }
 
   public static ParserDescriptor<Commander, ModDescription> modDescriptionParser() {
@@ -60,9 +60,12 @@ public final class ModDescriptionParser implements ArgumentParser<Commander, Mod
   }
 
   @Override
-  public Iterable<String> stringSuggestions(final CommandContext<Commander> commandContext, final CommandInput input) {
+  public Iterable<? extends Suggestion> suggestions(final CommandContext<Commander> commandContext, final CommandInput input) {
     return mods().allMods()
-      .map(ModDescription::modId)
+      .map(modDescription -> tooltipSuggestion(
+        modDescription.modId(),
+        Component.literal(modDescription.name()).withColor(Colors.BRIGHT_BLUE.value())
+      ))
       .toList();
   }
 }
