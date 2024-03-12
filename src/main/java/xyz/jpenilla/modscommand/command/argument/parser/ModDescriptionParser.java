@@ -32,7 +32,7 @@ import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.model.ModDescription;
 import xyz.jpenilla.modscommand.util.Colors;
 
-import static org.incendo.cloud.brigadier.suggestion.TooltipSuggestion.tooltipSuggestion;
+import static org.incendo.cloud.brigadier.suggestion.TooltipSuggestion.suggestion;
 import static org.incendo.cloud.parser.ArgumentParseResult.failure;
 import static org.incendo.cloud.parser.ArgumentParseResult.success;
 import static xyz.jpenilla.modscommand.model.Mods.mods;
@@ -62,7 +62,7 @@ public final class ModDescriptionParser implements ArgumentParser<Commander, Mod
   @Override
   public Iterable<? extends Suggestion> suggestions(final CommandContext<Commander> commandContext, final CommandInput input) {
     return mods().allMods()
-      .map(modDescription -> tooltipSuggestion(
+      .map(modDescription -> suggestion(
         modDescription.modId(),
         Component.literal(modDescription.name()).withColor(Colors.BRIGHT_BLUE.value())
       ))
