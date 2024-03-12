@@ -16,10 +16,6 @@
  */
 package xyz.jpenilla.modscommand.command.commands;
 
-import cloud.commandframework.Command;
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.context.CommandContext;
-import cloud.commandframework.permission.CommandPermission;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -30,6 +26,10 @@ import net.kyori.adventure.text.TextComponent;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.Command;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.context.CommandContext;
+import org.incendo.cloud.permission.Permission;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -49,12 +49,12 @@ import static xyz.jpenilla.modscommand.util.Colors.PINK;
 @DefaultQualifier(NonNull.class)
 public final class DumpModsCommand implements RegistrableCommand {
   private final String label;
-  private final @Nullable CommandPermission permission;
+  private final @Nullable Permission permission;
   private final Path dumpFile;
 
   public DumpModsCommand(
     final String primaryAlias,
-    final @Nullable CommandPermission permission
+    final @Nullable Permission permission
   ) {
     this.label = primaryAlias;
     this.permission = permission;
@@ -83,19 +83,19 @@ public final class DumpModsCommand implements RegistrableCommand {
       .content("Saved list of installed mods to ")
       .append(text(builder -> {
         builder.content(this.dumpFile.getFileName().toString()).color(PINK);
-        if (ctx.getSender() instanceof Commander.ClientCommander) {
+        if (ctx.sender() instanceof Commander.ClientCommander) {
           builder.clickEvent(openFile(this.dumpFile.toAbsolutePath().toString()))
             .hoverEvent(text("Click to open file!", EMERALD));
         }
       }))
       .append(text(" in the game directory."));
-    ctx.getSender().sendMessage(message);
+    ctx.sender().sendMessage(message);
     final TextComponent.Builder copyMessage = text()
       .content("Click here to copy it's contents to the clipboard.")
       .color(PINK)
       .clickEvent(copyToClipboard(dump))
       .hoverEvent(text("Click to copy to clipboard!", EMERALD));
-    ctx.getSender().sendMessage(copyMessage);
+    ctx.sender().sendMessage(copyMessage);
   }
 
   private static String createDump() throws ConfigurateException {

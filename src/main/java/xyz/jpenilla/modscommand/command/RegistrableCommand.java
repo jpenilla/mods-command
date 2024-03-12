@@ -16,9 +16,9 @@
  */
 package xyz.jpenilla.modscommand.command;
 
-import cloud.commandframework.CommandManager;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.CommandManager;
 
 @DefaultQualifier(NonNull.class)
 public interface RegistrableCommand {

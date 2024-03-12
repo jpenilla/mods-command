@@ -16,13 +16,14 @@
  */
 package xyz.jpenilla.modscommand;
 
-import cloud.commandframework.CommandManager;
-import cloud.commandframework.execution.CommandExecutionCoordinator;
-import cloud.commandframework.fabric.FabricClientCommandManager;
 import java.util.function.Function;
 import net.fabricmc.api.ClientModInitializer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
+import org.incendo.cloud.CommandManager;
+import org.incendo.cloud.SenderMapper;
+import org.incendo.cloud.execution.ExecutionCoordinator;
+import org.incendo.cloud.fabric.FabricClientCommandManager;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.command.Commands;
 import xyz.jpenilla.modscommand.command.RegistrableCommand;
@@ -34,9 +35,11 @@ public final class ModsCommandClientModInitializer implements ClientModInitializ
   @Override
   public void onInitializeClient() {
     final FabricClientCommandManager<Commander> manager = new FabricClientCommandManager<>(
-      CommandExecutionCoordinator.simpleCoordinator(),
-      Commander.ClientCommander::new,
-      commander -> ((Commander.ClientCommander) commander).source()
+      ExecutionCoordinator.simpleCoordinator(),
+      SenderMapper.create(
+        Commander.ClientCommander::new,
+        commander -> ((Commander.ClientCommander) commander).source()
+      )
     );
     Commands.configureCommandManager(manager);
 

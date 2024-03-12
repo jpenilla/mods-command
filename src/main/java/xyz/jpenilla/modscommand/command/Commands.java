@@ -16,14 +16,11 @@
  */
 package xyz.jpenilla.modscommand.command;
 
-import cloud.commandframework.execution.FilteringCommandSuggestionProcessor;
-import cloud.commandframework.fabric.FabricCommandManager;
-import cloud.commandframework.minecraft.extras.MinecraftExceptionHandler;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
-import xyz.jpenilla.modscommand.command.argument.ModDescriptionArgument;
-
-import static cloud.commandframework.minecraft.extras.AudienceProvider.nativeAudience;
+import org.incendo.cloud.fabric.FabricCommandManager;
+import org.incendo.cloud.minecraft.extras.MinecraftExceptionHandler;
+import xyz.jpenilla.modscommand.command.argument.parser.ModDescriptionParser;
 
 @DefaultQualifier(NonNull.class)
 public final class Commands {
@@ -31,16 +28,10 @@ public final class Commands {
   }
 
   public static void configureCommandManager(final @NonNull FabricCommandManager<Commander, ?> manager) {
-    manager.commandSuggestionProcessor(new FilteringCommandSuggestionProcessor<>(
-      FilteringCommandSuggestionProcessor.Filter.<Commander>contains(true).andTrimBeforeLastSpace()
-    ));
+    MinecraftExceptionHandler.<Commander>createNative()
+      .defaultHandlers()
+      .registerTo(manager);
 
-    manager.brigadierManager().setNativeNumberSuggestions(false);
-
-    new MinecraftExceptionHandler<Commander>()
-      .withDefaultHandlers()
-      .apply(manager, nativeAudience());
-
-    ModDescriptionArgument.registerParser(manager);
+    ModDescriptionParser.registerParser(manager);
   }
 }
