@@ -1,6 +1,5 @@
 import me.modmuss50.mpp.ReleaseType
 import xyz.jpenilla.resourcefactory.fabric.Environment
-import xyz.jpenilla.resourcefactory.fabric.fabricModJson
 
 plugins {
   val indraVersion = "3.1.3"
@@ -10,7 +9,7 @@ plugins {
   id("net.kyori.indra.licenser.spotless") version indraVersion
   id("quiet-fabric-loom") version "1.6-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.5.1"
-  id("xyz.jpenilla.resource-factory") version "0.0.3"
+  id("xyz.jpenilla.resource-factory-fabric-convention") version "0.0.4"
 }
 
 decorateVersion()
@@ -54,7 +53,7 @@ dependencies {
   modImplementation(libs.modmenu)
 }
 
-val fmj = fabricModJson {
+fabricModJson {
   name = "Mods Command"
   author("jmp")
   contact {
@@ -73,10 +72,6 @@ val fmj = fabricModJson {
   depends("minecraft", "1.20.x")
   depends("cloud", "*")
   depends("adventure-platform-fabric", "*")
-}
-
-sourceSets.main {
-  resourceFactory.factory(fmj.resourceFactory())
 }
 
 tasks {
