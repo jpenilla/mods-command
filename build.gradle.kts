@@ -1,4 +1,6 @@
 import me.modmuss50.mpp.ReleaseType
+import xyz.jpenilla.resourcefactory.fabric.Environment
+import xyz.jpenilla.resourcefactory.fabric.fabricModJson
 
 plugins {
   val indraVersion = "3.1.3"
@@ -8,13 +10,10 @@ plugins {
   id("net.kyori.indra.licenser.spotless") version indraVersion
   id("quiet-fabric-loom") version "1.6-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.4.5"
+  id("xyz.jpenilla.resource-factory") version "0.0.3"
 }
 
-version = "1.1.5-SNAPSHOT"
-  .run { if (endsWith("-SNAPSHOT")) "$this+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}" else this }
-group = "xyz.jpenilla"
-description = "Adds commands to list, search, and get information about installed mods."
-val githubUrl = "https://github.com/jpenilla/mods-command"
+decorateVersion()
 
 repositories {
   mavenCentral()
@@ -24,57 +23,72 @@ repositories {
   maven("https://maven.terraformersmc.com/releases/")
 }
 
-val minecraftVersion = "1.20.4"
-
 val bom: Configuration by configurations.creating
 listOf(configurations.implementation, configurations.include, configurations.modImplementation)
   .forEach { it { extendsFrom(bom) } }
 
 dependencies {
-  minecraft("com.mojang", "minecraft", minecraftVersion)
+  minecraft(libs.minecraft)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc:fabric-loader:0.15.7")
-  modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.1+1.20.4")
+  modImplementation(libs.fabricLoader)
+  modImplementation(libs.fabricApi)
 
-  bom(platform("org.incendo:cloud-bom:2.0.0-beta.4"))
-  bom(platform("org.incendo:cloud-minecraft-bom:2.0.0-beta.5"))
-  modImplementation("org.incendo:cloud-fabric:2.0.0-beta.4")
-  include("org.incendo:cloud-fabric:2.0.0-beta.4")
-  implementation("org.incendo:cloud-minecraft-extras")
-  include("org.incendo:cloud-minecraft-extras")
+  bom(platform(libs.cloudBom))
+  bom(platform(libs.cloudMinecraftBom))
+  modImplementation(libs.cloudFabric)
+  include(libs.cloudFabric)
+  implementation(libs.cloudMinecraftExtras)
+  include(libs.cloudMinecraftExtras)
 
-  modImplementation(include("net.kyori", "adventure-platform-fabric", "5.11.0"))
+  modImplementation(libs.adventureFabric)
+  include(libs.adventureFabric)
 
-  bom(platform("org.spongepowered:configurate-bom:4.2.0-SNAPSHOT"))
-  implementation(include("org.spongepowered", "configurate-core"))
-  implementation(include("io.leangen.geantyref:geantyref:1.3.13")!!)
-  implementation(include("org.spongepowered", "configurate-hocon"))
-  implementation(include("org.spongepowered", "configurate-yaml"))
+  bom(platform(libs.configurateBom))
+  implementation(libs.configurateCore)
+  include(libs.configurateCore)
+  implementation(libs.configurateHocon)
+  include(libs.configurateHocon)
+  implementation(libs.configurateYaml)
+  include(libs.configurateYaml)
 
-  compileOnly("org.checkerframework", "checker-qual", "3.42.0")
+  modImplementation(libs.modmenu)
+}
 
-  modImplementation("com.terraformersmc:modmenu:9.0.0")
+val fmj = fabricModJson {
+  name = "Mods Command"
+  author("jmp")
+  contact {
+    val githubUrl = "https://github.com/jpenilla/mods-command"
+    homepage = githubUrl
+    sources = githubUrl
+    issues = "$githubUrl/issues"
+  }
+  icon("assets/mods-command/icon.png")
+  environment = Environment.ANY
+  mainEntrypoint("xyz.jpenilla.modscommand.ModsCommandModInitializer")
+  clientEntrypoint("xyz.jpenilla.modscommand.ModsCommandClientModInitializer")
+  apache2License()
+  depends("fabric", "*")
+  depends("fabricloader", ">=${libs.versions.fabricLoader.get()}")
+  depends("minecraft", "1.20.x")
+  depends("cloud", "*")
+  depends("adventure-platform-fabric", "*")
+}
+
+sourceSets.main {
+  resourceFactory.factory(fmj.resourceFactory())
 }
 
 tasks {
-  processResources {
-    filesMatching("fabric.mod.json") {
-      expand(
-        "version" to project.version,
-        "github_url" to githubUrl,
-        "description" to project.description
-      )
-    }
-  }
   jar {
     from("LICENSE") {
       rename { "LICENSE_${project.name}" }
     }
   }
   remapJar {
-    archiveFileName.set("${project.name}-mc$minecraftVersion-${project.version}.jar")
+    archiveFileName.set("${project.name}-mc${libs.versions.minecraft.get()}-${project.version}.jar")
   }
-  withType<JavaCompile> {
+  withType<JavaCompile>().configureEach {
     options.compilerArgs.add("-Xlint:-processing")
   }
 }
@@ -98,5 +112,15 @@ publishMods.modrinth {
   changelog = providers.environmentVariable("RELEASE_NOTES")
   accessToken = providers.environmentVariable("MODRINTH_TOKEN")
   modLoaders.add("fabric")
-  minecraftVersions.add(minecraftVersion)
+  minecraftVersions.add(libs.versions.minecraft)
+}
+
+fun decorateVersion() {
+  val versionString = version as String
+  val decorated = if (versionString.endsWith("-SNAPSHOT")) {
+    "$versionString+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}"
+  } else {
+    versionString
+  }
+  version = decorated
 }
