@@ -6,7 +6,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.5-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.6-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.4.5"
 }
 
@@ -33,7 +33,7 @@ listOf(configurations.implementation, configurations.include, configurations.mod
 dependencies {
   minecraft("com.mojang", "minecraft", minecraftVersion)
   mappings(loom.officialMojangMappings())
-  modImplementation("net.fabricmc", "fabric-loader", "0.15.6")
+  modImplementation("net.fabricmc:fabric-loader:0.15.7")
   modImplementation("net.fabricmc.fabric-api:fabric-api:0.92.1+1.20.4")
 
   bom(platform("org.incendo:cloud-bom:2.0.0-beta.4"))
