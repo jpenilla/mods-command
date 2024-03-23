@@ -45,13 +45,11 @@ dependencies {
 
   modImplementation(include("net.kyori", "adventure-platform-fabric", "5.11.0"))
 
-  bom(platform("org.spongepowered:configurate-bom:4.1.2"))
+  bom(platform("org.spongepowered:configurate-bom:4.2.0-SNAPSHOT"))
   implementation(include("org.spongepowered", "configurate-core"))
   implementation(include("io.leangen.geantyref:geantyref:1.3.13")!!)
   implementation(include("org.spongepowered", "configurate-hocon"))
-  implementation(include("com.typesafe:config:1.4.2")!!)
   implementation(include("org.spongepowered", "configurate-yaml"))
-  implementation(include("org.yaml", "snakeyaml", "1.+"))
 
   compileOnly("org.checkerframework", "checker-qual", "3.42.0")
 
