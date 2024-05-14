@@ -1,7 +1,7 @@
 [versions]
-minecraft = "1.20.4"
-fabricLoader = "0.15.10"
-fabricApi = "0.97.0+1.20.4"
+minecraft = "1.20.6"
+fabricLoader = "0.15.11"
+fabricApi = "0.98.0+1.20.6"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -9,16 +9,16 @@ minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoader" }
 fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
 
-cloudBom = { module = "org.incendo:cloud-bom", version = "2.0.0-beta.5" }
-cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.6" }
-cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.5"
+cloudBom = { module = "org.incendo:cloud-bom", version = "2.0.0-rc.1" }
+cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.7" }
+cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.6"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
-adventureFabric = "net.kyori:adventure-platform-fabric:5.12.0"
+adventureFabric = "net.kyori:adventure-platform-fabric:5.13.0"
 
 configurateBom = "org.spongepowered:configurate-bom:4.2.0-SNAPSHOT"
 configurateCore = { module = "org.spongepowered:configurate-core" }
 configurateHocon = { module = "org.spongepowered:configurate-hocon" }
 configurateYaml = { module = "org.spongepowered:configurate-yaml" }
 
-modmenu = "com.terraformersmc:modmenu:9.0.0"
+modmenu = "com.terraformersmc:modmenu:10.0.0-beta.1"
