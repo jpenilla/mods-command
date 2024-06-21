@@ -10,7 +10,7 @@ fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoa
 fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
 
 cloudBom = { module = "org.incendo:cloud-bom", version = "2.0.0-rc.2" }
-cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.8" }
+cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.9" }
 cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.7"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
