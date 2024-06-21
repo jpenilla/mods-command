@@ -21,4 +21,4 @@ configurateCore = { module = "org.spongepowered:configurate-core" }
 configurateHocon = { module = "org.spongepowered:configurate-hocon" }
 configurateYaml = { module = "org.spongepowered:configurate-yaml" }
 
-modmenu = "com.terraformersmc:modmenu:11.0.0"
+modmenu = "com.terraformersmc:modmenu:11.0.1"
