@@ -19,7 +19,7 @@ package xyz.jpenilla.modscommand.command;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.audience.ForwardingAudience;
-import net.kyori.adventure.platform.fabric.FabricClientAudiences;
+import net.kyori.adventure.platform.modcommon.MinecraftClientAudiences;
 import net.minecraft.commands.CommandSourceStack;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
@@ -29,7 +29,7 @@ public interface Commander extends ForwardingAudience.Single {
   record ClientCommander(FabricClientCommandSource source) implements Commander {
     @Override
     public Audience audience() {
-      return FabricClientAudiences.of().audience();
+      return MinecraftClientAudiences.of().audience();
     }
   }
 
