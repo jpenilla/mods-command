@@ -1,7 +1,7 @@
 [versions]
 minecraft = "1.21.3"
 fabricLoader = "0.16.8"
-fabricApi = "0.107.0+1.21.3"
+fabricApi = "0.110.0+1.21.3"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
