@@ -11,7 +11,7 @@ fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabr
 
 cloudBom = { module = "org.incendo:cloud-bom", version = "2.0.0" }
 cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.10" }
-cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.9"
+cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.10"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
 adventureFabric = "net.kyori:adventure-platform-fabric:6.1.0"
