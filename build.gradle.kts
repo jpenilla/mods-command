@@ -7,7 +7,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.7-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.8-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.8.1"
   id("xyz.jpenilla.resource-factory-fabric-convention") version "1.2.0"
 }
