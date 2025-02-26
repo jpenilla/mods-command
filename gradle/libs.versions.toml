@@ -16,7 +16,7 @@ cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
 adventureFabric = "net.kyori:adventure-platform-fabric:6.2.0"
 
-configurateBom = "org.spongepowered:configurate-bom:4.2.0-SNAPSHOT"
+configurateBom = "org.spongepowered:configurate-bom:4.2.0"
 configurateCore = { module = "org.spongepowered:configurate-core" }
 configurateHocon = { module = "org.spongepowered:configurate-hocon" }
 configurateYaml = { module = "org.spongepowered:configurate-yaml" }
