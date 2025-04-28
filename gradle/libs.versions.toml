@@ -1,7 +1,7 @@
 [versions]
-minecraft = "1.21.4"
+minecraft = "1.21.5"
 fabricLoader = "0.16.14"
-fabricApi = "0.119.2+1.21.4"
+fabricApi = "0.121.0+1.21.5"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -14,7 +14,7 @@ cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0
 cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.10"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
-adventureFabric = "net.kyori:adventure-platform-fabric:6.3.0"
+adventureFabric = "net.kyori:adventure-platform-fabric:6.4.0-SNAPSHOT"
 
 configurateBom = "org.spongepowered:configurate-bom:4.2.0"
 configurateCore = { module = "org.spongepowered:configurate-core" }

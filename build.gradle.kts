@@ -16,6 +16,12 @@ decorateVersion()
 
 repositories {
   mavenCentral()
+  maven("https://repo.jpenilla.xyz/snapshots/") {
+    mavenContent {
+      snapshotsOnly()
+      includeGroup("net.kyori") // TODO adventure-platform-mod 6.4.0
+    }
+  }
   sonatype.s01Snapshots()
   sonatype.ossSnapshots()
   maven("https://maven.fabricmc.net/")
@@ -69,7 +75,7 @@ fabricModJson {
   apache2License()
   depends("fabric", "*")
   depends("fabricloader", ">=${libs.versions.fabricLoader.get()}")
-  depends("minecraft", "1.21.4")
+  depends("minecraft", "1.21.5")
   depends("cloud", "*")
   depends("adventure-platform-fabric", "*")
 }
