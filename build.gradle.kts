@@ -19,7 +19,7 @@ repositories {
   maven("https://repo.jpenilla.xyz/snapshots/") {
     mavenContent {
       snapshotsOnly()
-      includeGroup("net.kyori") // TODO adventure-platform-mod 6.4.0
+      includeGroup("xyz.jpenilla")
     }
   }
   sonatype.s01Snapshots()
