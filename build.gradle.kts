@@ -7,7 +7,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.10-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.11-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "0.8.4"
   id("xyz.jpenilla.resource-factory-fabric-convention") version "1.3.0"
 }
@@ -20,10 +20,12 @@ repositories {
     mavenContent {
       snapshotsOnly()
       includeGroup("xyz.jpenilla")
+      includeGroup("net.kyori") // TODO adventure-platform
     }
   }
-  sonatype.s01Snapshots()
-  sonatype.ossSnapshots()
+  maven("https://central.sonatype.com/repository/maven-snapshots/") {
+    mavenContent { snapshotsOnly() }
+  }
   maven("https://maven.fabricmc.net/")
   maven("https://maven.terraformersmc.com/releases/")
 }
@@ -75,7 +77,7 @@ fabricModJson {
   apache2License()
   depends("fabric", "*")
   depends("fabricloader", ">=${libs.versions.fabricLoader.get()}")
-  depends("minecraft", "1.21.5")
+  depends("minecraft", libs.versions.minecraft.get())
   depends("cloud", "*")
   depends("adventure-platform-fabric", "*")
 }
