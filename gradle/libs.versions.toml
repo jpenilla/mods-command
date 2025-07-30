@@ -14,7 +14,7 @@ cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0
 cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.11"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
-adventureFabric = "net.kyori:adventure-platform-fabric:6.5.0-SNAPSHOT"
+adventureFabric = "net.kyori:adventure-platform-fabric:6.6.0"
 
 configurateBom = "org.spongepowered:configurate-bom:4.2.0"
 configurateCore = { module = "org.spongepowered:configurate-core" }
