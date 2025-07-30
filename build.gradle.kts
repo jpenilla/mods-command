@@ -15,12 +15,13 @@ plugins {
 decorateVersion()
 
 repositories {
-  mavenCentral()
+  mavenCentral {
+    mavenContent { releasesOnly() }
+  }
   maven("https://repo.jpenilla.xyz/snapshots/") {
     mavenContent {
       snapshotsOnly()
       includeGroup("xyz.jpenilla")
-      includeGroup("net.kyori") // TODO adventure-platform
     }
   }
   maven("https://central.sonatype.com/repository/maven-snapshots/") {

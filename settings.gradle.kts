@@ -2,7 +2,9 @@ pluginManagement {
   repositories {
     gradlePluginPortal()
     maven("https://maven.fabricmc.net/")
-    maven("https://repo.jpenilla.xyz/snapshots/")
+    maven("https://repo.jpenilla.xyz/snapshots/") {
+      mavenContent { snapshotsOnly() }
+    }
   }
 }
 
