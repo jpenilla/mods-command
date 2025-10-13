@@ -49,7 +49,6 @@ dependencies {
   include(libs.cloudMinecraftExtras)
 
   modImplementation(libs.adventureFabric)
-  include(libs.adventureFabric)
 
   bom(platform(libs.configurateBom))
   implementation(libs.configurateCore)
@@ -118,6 +117,8 @@ publishMods.modrinth {
   accessToken = providers.environmentVariable("MODRINTH_TOKEN")
   modLoaders.add("fabric")
   minecraftVersions.add(libs.versions.minecraft)
+  requires("fabric-api")
+  requires("adventure-platform-mod")
 }
 
 fun decorateVersion() {
