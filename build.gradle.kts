@@ -77,7 +77,7 @@ fabricModJson {
   apache2License()
   depends("fabric", "*")
   depends("fabricloader", ">=${libs.versions.fabricLoader.get()}")
-  depends("minecraft", libs.versions.minecraft.get())
+  depends("minecraft", ">=${libs.versions.minecraft.get()}")
   depends("cloud", "*")
   depends("adventure-platform-fabric", "*")
 }
