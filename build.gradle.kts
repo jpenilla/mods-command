@@ -2,12 +2,12 @@ import me.modmuss50.mpp.ReleaseType
 import xyz.jpenilla.resourcefactory.fabric.Environment
 
 plugins {
-  val indraVersion = "3.2.0"
+  val indraVersion = "4.0.0"
   id("net.kyori.indra") version indraVersion
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.11-SNAPSHOT"
+  id("quiet-fabric-loom") version "1.13-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "1.1.0"
   id("xyz.jpenilla.resource-factory-fabric-convention") version "1.3.1"
 }
@@ -124,7 +124,7 @@ publishMods.modrinth {
 fun decorateVersion() {
   val versionString = version as String
   val decorated = if (versionString.endsWith("-SNAPSHOT")) {
-    "$versionString+${indraGit.commit()?.name?.substring(0, 7) ?: error("Could not determine git hash")}"
+    "$versionString+${indraGit.commit().orNull?.name?.substring(0, 7) ?: error("Could not determine git hash")}"
   } else {
     versionString
   }
