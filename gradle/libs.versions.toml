@@ -1,7 +1,7 @@
 [versions]
-minecraft = "1.21.11"
-fabricLoader = "0.18.3"
-fabricApi = "0.140.2+1.21.11"
+minecraft = "26.1.1"
+fabricLoader = "0.18.6"
+fabricApi = "0.145.3+26.1.1"
 
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
@@ -10,15 +10,15 @@ fabricLoader = { module = "net.fabricmc:fabric-loader", version.ref = "fabricLoa
 fabricApi = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabricApi" }
 
 cloudBom = { module = "org.incendo:cloud-bom", version = "2.0.0" }
-cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-beta.14" }
-cloudFabric = "org.incendo:cloud-fabric:2.0.0-beta.15"
+cloudMinecraftBom = { module = "org.incendo:cloud-minecraft-bom", version = "2.0.0-SNAPSHOT" }
+cloudFabric = "org.incendo:cloud-fabric:2.0.0-SNAPSHOT"
 cloudMinecraftExtras = { module = "org.incendo:cloud-minecraft-extras" }
 
-adventureFabric = "net.kyori:adventure-platform-fabric:6.8.0"
+adventureFabric = "net.kyori:adventure-platform-fabric:6.9.0-SNAPSHOT"
 
 configurateBom = "org.spongepowered:configurate-bom:4.2.0"
 configurateCore = { module = "org.spongepowered:configurate-core" }
 configurateHocon = { module = "org.spongepowered:configurate-hocon" }
 configurateYaml = { module = "org.spongepowered:configurate-yaml" }
 
-modmenu = "com.terraformersmc:modmenu:17.0.0-beta.1"
+modmenu = "com.terraformersmc:modmenu:18.0.0-alpha.8"

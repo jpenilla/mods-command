@@ -7,7 +7,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("quiet-fabric-loom") version "1.13-SNAPSHOT"
+  id("xyz.jpenilla.quiet-fabric-loom") version "1.15-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "1.1.0"
   id("xyz.jpenilla.resource-factory-fabric-convention") version "1.3.1"
 }
@@ -32,23 +32,22 @@ repositories {
 }
 
 val bom: Configuration by configurations.creating
-listOf(configurations.implementation, configurations.include, configurations.modImplementation)
+listOf(configurations.implementation, configurations.include)
   .forEach { it { extendsFrom(bom) } }
 
 dependencies {
   minecraft(libs.minecraft)
-  mappings(loom.officialMojangMappings())
-  modImplementation(libs.fabricLoader)
-  modImplementation(libs.fabricApi)
+  implementation(libs.fabricLoader)
+  implementation(libs.fabricApi)
 
   bom(platform(libs.cloudBom))
   bom(platform(libs.cloudMinecraftBom))
-  modImplementation(libs.cloudFabric)
+  implementation(libs.cloudFabric)
   include(libs.cloudFabric)
   implementation(libs.cloudMinecraftExtras)
   include(libs.cloudMinecraftExtras)
 
-  modImplementation(libs.adventureFabric)
+  implementation(libs.adventureFabric)
 
   bom(platform(libs.configurateBom))
   implementation(libs.configurateCore)
@@ -58,7 +57,7 @@ dependencies {
   implementation(libs.configurateYaml)
   include(libs.configurateYaml)
 
-  modImplementation(libs.modmenu)
+  implementation(libs.modmenu)
 }
 
 fabricModJson {
@@ -75,7 +74,7 @@ fabricModJson {
   mainEntrypoint("xyz.jpenilla.modscommand.ModsCommandModInitializer")
   clientEntrypoint("xyz.jpenilla.modscommand.ModsCommandClientModInitializer")
   apache2License()
-  depends("fabric", "*")
+  depends("fabric-api", "*")
   depends("fabricloader", ">=${libs.versions.fabricLoader.get()}")
   depends("minecraft", ">=${libs.versions.minecraft.get()}")
   depends("cloud", "*")
@@ -88,8 +87,6 @@ tasks {
     from("LICENSE") {
       rename { "LICENSE_${projectName}" }
     }
-  }
-  remapJar {
     archiveFileName.set("${project.name}-mc${libs.versions.minecraft.get()}-${project.version}.jar")
   }
   withType<JavaCompile>().configureEach {
@@ -99,7 +96,7 @@ tasks {
 
 indra {
   javaVersions {
-    target(21)
+    target(25)
   }
   github("jpenilla", "ModsCommand")
   apache2License()
@@ -112,7 +109,7 @@ indraSpotlessLicenser {
 publishMods.modrinth {
   projectId = "PExmWQV8"
   type = ReleaseType.STABLE
-  file = tasks.remapJar.flatMap { it.archiveFile }
+  file = tasks.jar.flatMap { it.archiveFile }
   changelog = providers.environmentVariable("RELEASE_NOTES")
   accessToken = providers.environmentVariable("MODRINTH_TOKEN")
   modLoaders.add("fabric")
