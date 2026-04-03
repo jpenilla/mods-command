@@ -16,4 +16,4 @@ jobs:
       modrinth-publish: true
       artifacts-path: 'build/libs/mods-command-mc*.jar'
       loom: true
-      jdk-version: 21
+      jdk-version: 25
