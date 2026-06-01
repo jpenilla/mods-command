@@ -1,6 +1,6 @@
 [versions]
 minecraft = "26.1.2"
-fabricLoader = "0.19.2"
+fabricLoader = "0.19.3"
 fabricApi = "0.146.1+26.1.2"
 
 [libraries]
