@@ -22,14 +22,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import net.kyori.examination.Examinable;
-import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
 @DefaultQualifier(NonNull.class)
-public interface ModDescription extends Examinable {
+public interface ModDescription {
   @Nullable ModDescription parent();
 
   List<ModDescription> children();
@@ -88,25 +86,6 @@ public interface ModDescription extends Examinable {
 
   default Stream<ModDescription> selfAndChildren() {
     return Stream.concat(Stream.of(this), this.childrenStream());
-  }
-
-  @Override
-  default Stream<ExaminableProperty> examinableProperties() {
-    final @Nullable ModDescription parent = this.parent();
-    return Stream.of(
-      ExaminableProperty.of("modId", this.modId()),
-      ExaminableProperty.of("name", this.name()),
-      ExaminableProperty.of("version", this.version()),
-      ExaminableProperty.of("type", this.type()),
-      ExaminableProperty.of("description", this.description()),
-      ExaminableProperty.of("authors", this.authors()),
-      ExaminableProperty.of("contributors", this.contributors()),
-      ExaminableProperty.of("licenses", this.licenses()),
-      ExaminableProperty.of("contact", this.contact()),
-      ExaminableProperty.of("environment", this.environment()),
-      ExaminableProperty.of("parent", parent == null ? null : parent.modId()),
-      ExaminableProperty.of("children", this.children())
-    );
   }
 
   static ModDescription fromFabric(final ModMetadata fabric) {

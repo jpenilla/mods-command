@@ -21,11 +21,9 @@ import io.leangen.geantyref.TypeToken;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.stream.Stream;
 import net.fabricmc.loader.api.metadata.ModEnvironment;
 import net.fabricmc.loader.api.metadata.ModMetadata;
 import net.fabricmc.loader.api.metadata.Person;
-import net.kyori.examination.ExaminableProperty;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.checkerframework.framework.qual.DefaultQualifier;
 
@@ -110,11 +108,6 @@ final class FabricModMetadataModDescription extends AbstractModDescription {
       return (A) this.metadata;
     }
     return super.attribute(type);
-  }
-
-  @Override
-  public Stream<ExaminableProperty> examinableProperties() {
-    return Stream.concat(super.examinableProperties(), Stream.of(ExaminableProperty.of("metadata", this.metadata)));
   }
 
   private static Environment fromFabric(final ModEnvironment modEnvironment) {

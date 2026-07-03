@@ -1,4 +1,5 @@
 import me.modmuss50.mpp.ReleaseType
+import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 import xyz.jpenilla.resourcefactory.fabric.Environment
 
 plugins {
@@ -107,6 +108,7 @@ indraSpotlessLicenser {
 }
 
 publishMods.modrinth {
+  environment = ModrinthEnvironment.CLIENT_OR_SERVER
   projectId = "PExmWQV8"
   type = ReleaseType.STABLE
   file = tasks.jar.flatMap { it.archiveFile }

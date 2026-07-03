@@ -133,12 +133,12 @@ public final class ModsCommand implements RegistrableCommand {
           .handler(ctx -> {
             final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
             final Minecraft client = Minecraft.getInstance();
-            final @Nullable Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.screen);
+            final @Nullable Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.gui.screen());
             if (configScreen == null) {
               ctx.sender().sendMessage(textOfChildren(coloredBoldModName(mod), text(" does not have a config screen!", MUSTARD)));
               return;
             }
-            client.execute(() -> client.setScreen(configScreen));
+            client.execute(() -> client.gui.setScreen(configScreen));
           })
       );
     }
@@ -480,7 +480,7 @@ public final class ModsCommand implements RegistrableCommand {
     return text(mod.name(), PURPLE, BOLD);
   }
 
-  private ClickEvent modInfo(final ModDescription description) {
+  private ClickEvent<?> modInfo(final ModDescription description) {
     return runCommand(String.format("/%s info %s", this.label, description.modId()));
   }
 }
