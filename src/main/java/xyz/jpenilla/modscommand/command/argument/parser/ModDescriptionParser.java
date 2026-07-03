@@ -17,9 +17,6 @@
 package xyz.jpenilla.modscommand.command.argument.parser;
 
 import net.minecraft.network.chat.Component;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.context.CommandInput;
@@ -28,6 +25,7 @@ import org.incendo.cloud.parser.ArgumentParser;
 import org.incendo.cloud.parser.ParserDescriptor;
 import org.incendo.cloud.suggestion.BlockingSuggestionProvider;
 import org.incendo.cloud.suggestion.Suggestion;
+import org.jspecify.annotations.NullMarked;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.model.ModDescription;
 import xyz.jpenilla.modscommand.util.Colors;
@@ -37,7 +35,7 @@ import static org.incendo.cloud.parser.ArgumentParseResult.failure;
 import static org.incendo.cloud.parser.ArgumentParseResult.success;
 import static xyz.jpenilla.modscommand.model.Mods.mods;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class ModDescriptionParser implements ArgumentParser<Commander, ModDescription>, BlockingSuggestionProvider<Commander> {
   public static void registerParser(final CommandManager<Commander> manager) {
     manager.parserRegistry().registerParser(modDescriptionParser());
@@ -50,7 +48,7 @@ public final class ModDescriptionParser implements ArgumentParser<Commander, Mod
   @Override
   public ArgumentParseResult<ModDescription> parse(final CommandContext<Commander> commandContext, final CommandInput input) {
     final String read = input.readString();
-    final @Nullable ModDescription meta = mods().findMod(read);
+    final ModDescription meta = mods().findMod(read);
     if (meta != null) {
       return success(meta);
     }

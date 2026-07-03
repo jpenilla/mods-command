@@ -22,14 +22,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.hocon.HoconConfigurationLoader;
 import org.spongepowered.configurate.loader.ConfigurationLoader;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class ConfigHolder<C> {
   private final TypeToken<C> configType;
   private final Path configFile;
@@ -46,7 +45,7 @@ public final class ConfigHolder<C> {
   }
 
   public C config() {
-    final @Nullable C config = this.config;
+    final C config = this.config;
     if (config == null) {
       throw new IllegalStateException("Config is not loaded (null)");
     }
@@ -58,8 +57,8 @@ public final class ConfigHolder<C> {
   }
 
   public synchronized void load() throws IOException {
-    @Nullable C loaded = null;
-    @Nullable IOException fail = null;
+    C loaded = null;
+    IOException fail = null;
     try {
       if (!Files.exists(this.configFile.getParent())) {
         Files.createDirectories(this.configFile.getParent());

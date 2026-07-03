@@ -19,13 +19,12 @@ package xyz.jpenilla.modscommand.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import static java.util.Comparator.comparing;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public abstract class AbstractModDescription implements ModDescription {
   private final List<ModDescription> children = new ArrayList<>();
   private @Nullable ModDescription parent = null;
@@ -57,7 +56,7 @@ public abstract class AbstractModDescription implements ModDescription {
 
   @Override
   public final String toString() {
-    final @Nullable ModDescription parent = this.parent();
+    final ModDescription parent = this.parent();
     return this.getClass().getSimpleName() + '{' +
       "modId='" + this.modId() + '\'' +
       ", name='" + this.name() + '\'' +

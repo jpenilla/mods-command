@@ -19,13 +19,12 @@ package xyz.jpenilla.modscommand;
 import java.io.IOException;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
-import org.checkerframework.checker.nullness.qual.MonotonicNonNull;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.SenderMapper;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.fabric.FabricServerCommandManager;
 import org.incendo.cloud.permission.Permission;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import xyz.jpenilla.modscommand.command.Commander;
@@ -38,9 +37,9 @@ import xyz.jpenilla.modscommand.model.Mods;
 
 import static xyz.jpenilla.modscommand.model.Mods.mods;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class ModsCommandModInitializer implements ModInitializer {
-  private static @MonotonicNonNull ModsCommandModInitializer instance;
+  private static @Nullable ModsCommandModInitializer instance;
   public static final Logger LOGGER = LoggerFactory.getLogger("Mods Command");
 
   private final ConfigHolder<Config> configHolder = ConfigHolder.create(

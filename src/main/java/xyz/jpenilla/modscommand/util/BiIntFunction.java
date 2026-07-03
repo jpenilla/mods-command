@@ -16,7 +16,10 @@
  */
 package xyz.jpenilla.modscommand.util;
 
+import org.jspecify.annotations.NullMarked;
+
 @FunctionalInterface
+@NullMarked
 public interface BiIntFunction<T> {
   T apply(int i, int i1);
 }

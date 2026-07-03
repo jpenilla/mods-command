@@ -28,9 +28,8 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.fabricmc.loader.api.ModContainer;
 import net.fabricmc.loader.api.metadata.CustomValue;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import xyz.jpenilla.modscommand.ModsCommandModInitializer;
 
 import static java.util.Collections.emptyList;
@@ -41,7 +40,7 @@ import static java.util.stream.Collectors.toMap;
 import static java.util.stream.Collectors.toUnmodifiableMap;
 import static java.util.stream.Collectors.toUnmodifiableSet;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class Mods {
   private static final String QSL_MOD_ID = "qsl";
   private static final String LEGACY_FABRIC_API_MOD_ID = "fabric";
@@ -110,14 +109,14 @@ public final class Mods {
   private static void arrangeChildModsUsingModMenuMetadata(final Map<String, ModDescription> descriptions) {
     final Map<String, List<ModDescription>> byParent = new HashMap<>();
     descriptions.values().forEach(modDescription -> {
-      final @Nullable String parent = parentUsingModMenuMetadata(modDescription);
+      final String parent = parentUsingModMenuMetadata(modDescription);
       if (parent == null) {
         return;
       }
       byParent.computeIfAbsent(parent, $ -> new ArrayList<>()).add(modDescription);
     });
     byParent.forEach((parentId, children) -> {
-      final @Nullable ModDescription parent = descriptions.get(parentId);
+      final ModDescription parent = descriptions.get(parentId);
       if (parent == null) {
         return;
       }
@@ -156,7 +155,7 @@ public final class Mods {
   }
 
   private static void arrangeQFapiChildren(final Map<String, ModDescription> descriptions) {
-    final @Nullable ModDescription qfapi = descriptions.get(QUILTED_FABRIC_API_MOD_ID);
+    final ModDescription qfapi = descriptions.get(QUILTED_FABRIC_API_MOD_ID);
     if (qfapi != null) {
       final List<ModDescription> qfapiModules = descriptions.values().stream()
         .filter(it -> {
@@ -173,7 +172,7 @@ public final class Mods {
   }
 
   private static void arrangeFapiChildren(final Map<String, ModDescription> descriptions) {
-    final @Nullable ModDescription fapi = fabricApi(descriptions);
+    final ModDescription fapi = fabricApi(descriptions);
     if (fapi == null) {
       return;
     }
@@ -187,7 +186,7 @@ public final class Mods {
   }
 
   private static @Nullable ModDescription fabricApi(final Map<String, ModDescription> descriptions) {
-    @Nullable ModDescription fapi = descriptions.get(FABRIC_API_MOD_ID);
+    ModDescription fapi = descriptions.get(FABRIC_API_MOD_ID);
     if (fapi == null) {
       fapi = descriptions.get(LEGACY_FABRIC_API_MOD_ID);
     }

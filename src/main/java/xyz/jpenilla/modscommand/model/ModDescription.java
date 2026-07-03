@@ -22,11 +22,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 import net.fabricmc.loader.api.metadata.ModMetadata;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public interface ModDescription {
   @Nullable ModDescription parent();
 
@@ -69,7 +68,7 @@ public interface ModDescription {
   }
 
   default Stream<ModDescription> parentStream() {
-    final @Nullable ModDescription parent = this.parent();
+    final ModDescription parent = this.parent();
     if (parent == null) {
       return Stream.empty();
     }

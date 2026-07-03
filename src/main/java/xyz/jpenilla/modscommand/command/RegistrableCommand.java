@@ -16,11 +16,10 @@
  */
 package xyz.jpenilla.modscommand.command;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.CommandManager;
+import org.jspecify.annotations.NullMarked;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public interface RegistrableCommand {
   void register(final CommandManager<Commander> commandManager);
 }

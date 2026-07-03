@@ -16,18 +16,17 @@
  */
 package xyz.jpenilla.modscommand.command;
 
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.fabric.FabricCommandManager;
 import org.incendo.cloud.minecraft.extras.MinecraftExceptionHandler;
+import org.jspecify.annotations.NullMarked;
 import xyz.jpenilla.modscommand.command.argument.parser.ModDescriptionParser;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class Commands {
   private Commands() {
   }
 
-  public static void configureCommandManager(final @NonNull FabricCommandManager<Commander, ?> manager) {
+  public static void configureCommandManager(final FabricCommandManager<Commander, ?> manager) {
     MinecraftExceptionHandler.<Commander>createNative()
       .defaultHandlers()
       .registerTo(manager);

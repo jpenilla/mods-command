@@ -18,19 +18,18 @@ package xyz.jpenilla.modscommand;
 
 import java.util.function.Function;
 import net.fabricmc.api.ClientModInitializer;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.SenderMapper;
 import org.incendo.cloud.execution.ExecutionCoordinator;
 import org.incendo.cloud.fabric.FabricClientCommandManager;
+import org.jspecify.annotations.NullMarked;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.command.Commands;
 import xyz.jpenilla.modscommand.command.RegistrableCommand;
 import xyz.jpenilla.modscommand.command.commands.DumpModsCommand;
 import xyz.jpenilla.modscommand.command.commands.ModsCommand;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class ModsCommandClientModInitializer implements ClientModInitializer {
   @Override
   public void onInitializeClient() {

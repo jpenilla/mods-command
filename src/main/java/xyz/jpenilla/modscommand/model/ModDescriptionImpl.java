@@ -19,10 +19,9 @@ package xyz.jpenilla.modscommand.model;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 final class ModDescriptionImpl extends AbstractModDescription {
   private final String modId;
   private final String name;

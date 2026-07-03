@@ -23,13 +23,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import net.fabricmc.loader.api.FabricLoader;
 import net.kyori.adventure.text.TextComponent;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.permission.Permission;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -46,7 +45,7 @@ import static xyz.jpenilla.modscommand.model.Mods.mods;
 import static xyz.jpenilla.modscommand.util.Colors.EMERALD;
 import static xyz.jpenilla.modscommand.util.Colors.PINK;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class DumpModsCommand implements RegistrableCommand {
   private final String label;
   private final @Nullable Permission permission;

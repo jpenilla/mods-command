@@ -18,13 +18,12 @@ package xyz.jpenilla.modscommand.model;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.ComponentLike;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.framework.qual.DefaultQualifier;
+import org.jspecify.annotations.NullMarked;
 
 import static net.kyori.adventure.text.Component.text;
 import static xyz.jpenilla.modscommand.util.Colors.EMERALD;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public enum Environment {
   CLIENT(text()
     .content("client")

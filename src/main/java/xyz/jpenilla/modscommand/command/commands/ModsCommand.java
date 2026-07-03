@@ -34,9 +34,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.event.ClickEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import org.checkerframework.checker.nullness.qual.NonNull;
-import org.checkerframework.checker.nullness.qual.Nullable;
-import org.checkerframework.framework.qual.DefaultQualifier;
 import org.incendo.cloud.Command;
 import org.incendo.cloud.CommandManager;
 import org.incendo.cloud.component.DefaultValue;
@@ -44,6 +41,8 @@ import org.incendo.cloud.component.TypedCommandComponent;
 import org.incendo.cloud.context.CommandContext;
 import org.incendo.cloud.key.CloudKey;
 import org.incendo.cloud.permission.Permission;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 import xyz.jpenilla.modscommand.command.Commander;
 import xyz.jpenilla.modscommand.command.RegistrableCommand;
 import xyz.jpenilla.modscommand.model.Environment;
@@ -78,7 +77,7 @@ import static xyz.jpenilla.modscommand.util.Colors.MUSTARD;
 import static xyz.jpenilla.modscommand.util.Colors.PINK;
 import static xyz.jpenilla.modscommand.util.Colors.PURPLE;
 
-@DefaultQualifier(NonNull.class)
+@NullMarked
 public final class ModsCommand implements RegistrableCommand {
   private static final CloudKey<ModDescription> MOD_ARGUMENT_KEY = cloudKey("mod_id", ModDescription.class);
   private static final CloudKey<Integer> PAGE_ARGUMENT_KEY = cloudKey("page_number", Integer.class);
@@ -133,7 +132,7 @@ public final class ModsCommand implements RegistrableCommand {
           .handler(ctx -> {
             final ModDescription mod = ctx.get(MOD_ARGUMENT_KEY);
             final Minecraft client = Minecraft.getInstance();
-            final @Nullable Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.gui.screen());
+            final Screen configScreen = ModMenu.getConfigScreen(mod.modId(), client.gui.screen());
             if (configScreen == null) {
               ctx.sender().sendMessage(textOfChildren(coloredBoldModName(mod), text(" does not have a config screen!", MUSTARD)));
               return;
@@ -363,7 +362,7 @@ public final class ModsCommand implements RegistrableCommand {
         .append(space())
         .append(labelled("environment", mod.environment().display()));
     }
-    final @Nullable ModDescription parent = mod.parent();
+    final ModDescription parent = mod.parent();
     if (parent != null) {
       builder.append(newline())
         .append(space())
