@@ -8,7 +8,7 @@ plugins {
   id("net.kyori.indra.git") version indraVersion
   id("net.kyori.indra.checkstyle") version indraVersion
   id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("xyz.jpenilla.quiet-fabric-loom") version "1.16-SNAPSHOT"
+  id("xyz.jpenilla.quiet-fabric-loom") version "1.17-SNAPSHOT"
   id("me.modmuss50.mod-publish-plugin") version "2.1.1"
   id("xyz.jpenilla.resource-factory-fabric-convention") version "1.3.1"
 }
@@ -32,7 +32,7 @@ repositories {
   maven("https://maven.terraformersmc.com/releases/")
 }
 
-val bom: Configuration by configurations.creating
+val bom = configurations.register("bom")
 listOf(configurations.implementation, configurations.include)
   .forEach { it { extendsFrom(bom) } }
 
