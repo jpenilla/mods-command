@@ -3,14 +3,13 @@ import me.modmuss50.mpp.platforms.modrinth.ModrinthEnvironment
 import xyz.jpenilla.resourcefactory.fabric.Environment
 
 plugins {
-  val indraVersion = "4.0.0"
-  id("net.kyori.indra") version indraVersion
-  id("net.kyori.indra.git") version indraVersion
-  id("net.kyori.indra.checkstyle") version indraVersion
-  id("net.kyori.indra.licenser.spotless") version indraVersion
-  id("xyz.jpenilla.quiet-fabric-loom") version "1.17-SNAPSHOT"
-  id("me.modmuss50.mod-publish-plugin") version "2.1.1"
-  id("xyz.jpenilla.resource-factory-fabric-convention") version "1.3.1"
+  alias(libs.plugins.indra)
+  alias(libs.plugins.indraGit)
+  alias(libs.plugins.indraCheckstyle)
+  alias(libs.plugins.indraLicenserSpotless)
+  alias(libs.plugins.quietFabricLoom)
+  alias(libs.plugins.modPublishPlugin)
+  alias(libs.plugins.resourceFactoryFabricConvention)
 }
 
 decorateVersion()
