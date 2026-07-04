@@ -35,7 +35,7 @@ public abstract class AbstractModDescription implements ModDescription {
     }
   }
 
-  public void addChild(final ModDescription newChild) {
+  public final void addChild(final ModDescription newChild) {
     if (!(newChild instanceof AbstractModDescription newChildAbs)) {
       throw new IllegalArgumentException(String.format("Cannot add non-AbstractModDescription as a child. Attempted to add %s '%s'.", newChild.getClass().getName(), newChild));
     }
