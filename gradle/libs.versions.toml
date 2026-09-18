@@ -1,7 +1,7 @@
 [versions]
 minecraft = "26.3"
 fabricLoader = "0.19.5"
-fabricApi = "0.160.7+26.3"
+fabricApi = "0.161.0+26.3"
 indra = "4.1.0"
 loom = "1.18-SNAPSHOT"
 modPublishPlugin = "2.2.0"
