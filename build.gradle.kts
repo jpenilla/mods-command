@@ -43,7 +43,6 @@ dependencies {
   bom(platform(libs.cloudBom))
   bom(platform(libs.cloudMinecraftBom))
   implementation(libs.cloudFabric)
-  include(libs.cloudFabric)
   implementation(libs.cloudMinecraftExtras)
   include(libs.cloudMinecraftExtras)
 
@@ -117,6 +116,7 @@ publishMods.modrinth {
   minecraftVersions.add(libs.versions.minecraft)
   requires("fabric-api")
   requires("adventure-platform-mod")
+  requires("cloud-minecraft-modded")
 }
 
 fun decorateVersion() {
